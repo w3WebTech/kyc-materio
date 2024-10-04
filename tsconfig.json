@@ -1,0 +1,11 @@
+{
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "types": [
+      "nuxt/app",
+      "./types/flatpickr.d.ts"
+    ]
+    // other options...
+  },
+}
