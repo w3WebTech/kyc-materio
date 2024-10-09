@@ -7,7 +7,7 @@ export default <RouterConfig> {
     {
       path: '/',
       name: 'index',
-      redirect: '/tableData',
+      redirect: '/kyc-tabs',
     },
     {
       path: '/tableData',

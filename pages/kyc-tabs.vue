@@ -13,104 +13,90 @@ let rules = [
     !fileList || !fileList.length || fileList[0].size < 1000000 || 'Avatar size should be less than 1 MB!',
 ]
 
+let imageUrl2 = ref(null)
+let imageUrl3 = ref(null)
+let imageUrl4 = ref(null)
 let avatar = ref(null)
-let avatar1 = ref(null)
+
 let avatar2 = ref(null)
 let avatar3 = ref(null)
 let avatar4 = ref(null)
+let avatar1 = ref(null)
 
-let imageUrl = computed(() => {
+const imageUrl1 = ref(null)
+
+watch(avatar1, newAvatar => {
+  if (newAvatar) {
+    debugger
+    imageUrl1.value = URL.createObjectURL(newAvatar[0])
+  } else {
+    imageUrl1.value = null
+  }
+})
+
+function handleAvatarUpdate1(newAvatar) {
   debugger
-  if (avatar.value) {
-    console.log('Selected file:', avatar.value[0])
-    return URL.createObjectURL(avatar.value[0])
+  avatar1.value = newAvatar
+  imageUrl1.value = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+}
+
+watch(avatar2, newAvatar => {
+  if (newAvatar) {
+    debugger
+    imageUrl2.value = URL.createObjectURL(newAvatar[0])
   } else {
-    return null
+    imageUrl2.value = null
   }
 })
-let imageUrl1 = computed(() => {
-  if (avatar1.value) {
-    console.log('Selected file:', avatar1.value[0])
-    return URL.createObjectURL(avatar1.value[0])
+
+function handleAvatarUpdate2(newAvatar) {
+  debugger
+  avatar2.value = newAvatar
+  imageUrl2.value = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+}
+watch(avatar3, newAvatar => {
+  if (newAvatar) {
+    debugger
+    imageUrl3.value = URL.createObjectURL(newAvatar[0])
   } else {
-    return null
+    imageUrl3.value = null
   }
 })
-let imageUrl2 = computed(() => {
-  if (avatar2.value) {
-    console.log('Selected file:', avatar2.value[0])
-    return URL.createObjectURL(avatar2.value[0])
+
+function handleAvatarUpdate3(newAvatar) {
+  debugger
+  avatar3.value = newAvatar
+  imageUrl3.value = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+}
+watch(avatar4, newAvatar => {
+  if (newAvatar) {
+    debugger
+    imageUrl4.value = URL.createObjectURL(newAvatar[0])
   } else {
-    return null
+    imageUrl4.value = null
   }
 })
-let imageUrl3 = computed(() => {
-  if (avatar3.value) {
-    console.log('Selected file:', avatar3.value[0])
-    return URL.createObjectURL(avatar3.value[0])
+
+function handleAvatarUpdate4(newAvatar) {
+  debugger
+  avatar4.value = newAvatar
+  imageUrl4.value = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+}
+watch(avatar, newAvatar => {
+  if (newAvatar) {
+    debugger
+    imageUrl.value = URL.createObjectURL(newAvatar[0])
   } else {
-    return null
-  }
-})
-let imageUrl4 = computed(() => {
-  if (avatar4.value) {
-    console.log('Selected file:', avatar4.value[0])
-    return URL.createObjectURL(avatar4.value[0])
-  } else {
-    return null
+    imageUrl.value = null
   }
 })
 
 function handleAvatarUpdate(newAvatar) {
-  console.log('Avatar updated:', newAvatar)
-  avatar = newAvatar
-  if (newAvatar) {
-    imageUrl = URL.createObjectURL(newAvatar[0])
-    console.log(imageUrl, 'imageUrl')
-  } else {
-    imageUrl = null
-  }
+  debugger
+  avatar.value = newAvatar
+  imageUrl.value = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
 }
-function handleAvatarUpdate1(newAvatar) {
-  console.log('Avatar updated:', newAvatar)
-  avatar1 = newAvatar
-  if (newAvatar) {
-    imageUrl1 = URL.createObjectURL(newAvatar[0])
-    console.log(imageUrl1, 'imageUrl')
-  } else {
-    imageUrl1 = null
-  }
-}
-function handleAvatarUpdate2(newAvatar) {
-  console.log('Avatar updated:', newAvatar)
-  avatar2 = newAvatar
-  if (newAvatar) {
-    imageUrl2 = URL.createObjectURL(newAvatar[0])
-    console.log(imageUrl2, 'imageUrl')
-  } else {
-    imageUrl2 = null
-  }
-}
-function handleAvatarUpdate3(newAvatar) {
-  console.log('Avatar updated:', newAvatar)
-  avatar3 = newAvatar
-  if (newAvatar) {
-    imageUrl3 = URL.createObjectURL(newAvatar[0])
-    console.log(imageUrl3, 'imageUrl')
-  } else {
-    imageUrl3 = null
-  }
-}
-function handleAvatarUpdate4(newAvatar) {
-  console.log('Avatar updated:', newAvatar)
-  avatar4 = newAvatar
-  if (newAvatar) {
-    imageUrl4 = URL.createObjectURL(newAvatar[0])
-    console.log(imageUrl4, 'imageUrl')
-  } else {
-    imageUrl4 = null
-  }
-}
+
 const ApAddress = ref(['John'])
 const currentStep = ref(0)
 const currentTab = ref(0)
@@ -118,6 +104,7 @@ const isPasswordVisible = ref(false)
 const isCPasswordVisible = ref(false)
 const selectedGender = ref('')
 const selectedmStatus = ref('')
+const selected = ref('')
 const formData = ref({
   name: '',
   fname: '',
@@ -133,6 +120,25 @@ const formData = ref({
   choosedExchange: '',
   googlePlus: '',
   LinkedIn: '',
+  address: '',
+  pincode: '',
+  city: '',
+  district: '',
+  state: '',
+  country: '',
+  address1: '',
+  pincode1: '',
+  city1: '',
+  district1: '',
+  state1: '',
+  country1: '',
+  apAddress: false,
+  micr: '',
+  accountType: '',
+  ifsc: '',
+  accountNumber: '',
+  bankName: '',
+  bankAddress: '',
 })
 
 const onSubmit = () => {
@@ -140,50 +146,24 @@ const onSubmit = () => {
 }
 const gender = (val: string) => {
   selectedGender.value = val
+  genderErrors.value = false
 }
 const mStatus = (val: string) => {
   selectedmStatus.value = val
+  mstatusErrors.value = false
+}
+function selectedcheck(val: string) {
+  debugger
+  if (val) {
+    selected.value = val
+    selectedErrors.value = false
+  }
 }
 const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']
-const selected = ref([''])
+
 const declaration = ref(false)
 function changedeclaration() {
   declaration.value = !declaration.value
-}
-function removeAvatar() {
-  debugger
-  console.log(imageUrl, 'check')
-  avatar = null
-  imageUrl = null
-  console.log(imageUrl, avatar, 'check1')
-}
-watch(avatar, (newValue, oldValue) => {
-  console.log('avatar changed:', newValue, oldValue)
-  if (newValue != null) {
-    imageUrl = URL.createObjectURL(newValue[0])
-  } else {
-    imageUrl = null
-  }
-})
-watch(imageUrl, (newValue, oldValue) => {
-  console.log('imageUrl changed:', newValue, oldValue)
-  // You can add your logic here to handle the change
-})
-function removeAvatar1(this: any) {
-  avatar1.value = null
-  imageUrl1 = null
-}
-function removeAvatar2() {
-  avatar2.value = null
-  imageUrl2 = null
-}
-function removeAvatar3() {
-  avatar3.value = null
-  imageUrl3 = null
-}
-function removeAvatar4() {
-  avatar4.value = null
-  imageUrl4 = null
 }
 const nameErrors = ref([])
 const fnameErrors = ref([])
@@ -197,60 +177,34 @@ const branchErrors = ref([])
 const genderErrors = ref(false)
 const mstatusErrors = ref(false)
 const selectedErrors = ref(false)
-// function validateForm() {
-//   debugger
-//   console.log(formData.value.fname, 'formData.value.fname')
-//   console.log(formData.value.name, 'formData.value.name')
-//   console.log(formData.value.email, 'formData.value.email')
-//   console.log(formData.value.pan, 'formData.value.pan')
-//   console.log(formData.value.dob, 'formData.value.dob')
-//   console.log(formData.value.adhar, 'formData.value.adhar')
-//   console.log(formData.value.branchCode, 'formData.value.branchCode')
-//   console.log(formData.value.education, 'formData.value.education')
-//   console.log(selectedGender.value, 'selectedGender.value')
-//   if (
-//     formData.value.fname != null &&
-//     formData.value.fname != '' &&
-//     formData.value.name != null &&
-//     formData.value.name != '' &&
-//     formData.value.email != null &&
-//     formData.value.email != '' &&
-//     formData.value.pan != null &&
-//     formData.value.pan != '' &&
-//     formData.value.dob != null &&
-//     formData.value.dob != '' &&
-//     formData.value.adhar != null &&
-//     formData.value.adhar != '' &&
-//     formData.value.branchCode != null &&
-//     formData.value.branchCode != '' &&
-//     formData.value.education != null &&
-//     formData.value.education != '' &&
-//     selectedGender.value != '' &&
-//     selectedGender.value != null &&
-//     selectedmStatus.value != null &&
-//     selectedmStatus.value != '' &&
-//     selected.value != null &&
-//     selected.value != ''
-//   ) {
-//     currentStep.value++
-//   } else {
-//     nameErrors.value = ['This field is required']
-//     fnameErrors.value = ['This field is required']
-//     emailErrors.value = ['This field is required']
-//     phoneErrors.value = ['This field is required']
-//     panErrors.value = ['This field is required']
-//     dobErrors.value = ['This field is required']
-//     adharErrors.value = ['This field is required']
-//     educationErrors.value = ['This field is required']
-//     branchErrors.value = ['This field is required']
-//     genderErrors.value = true
-//     mstatusErrors.value = true
-//     selectedErrors.value = true
-//   }
-// }
+const addressErrors = ref([])
+const pincodeErrors = ref([])
+const cityErrors = ref([])
+const districtErrors = ref([])
+const stateErrors = ref([])
+const countryErrors = ref([])
+const address1Errors = ref([])
+const pincode1Errors = ref([])
+const city1Errors = ref([])
+const district1Errors = ref([])
+const state1Errors = ref([])
+const country1Errors = ref([])
+const apAddressErrors = ref(false)
+const micrErrors = ref([])
+const accountTypeErrors = ref([])
+const ifscErrors = ref([])
+const accountNumberErrors = ref([])
+const bankNameErrors = ref([])
+const bankAddressErrors = ref([])
+
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const ifscRegx = /^[A-Za-z]{4}[a-zA-Z0-9]{7}$/
+const date = ref(new Date())
+
 watch(
   () => formData.value.fname,
   newValue => {
+    debugger
     if (!newValue) {
       fnameErrors.value = ['This field is required']
     } else {
@@ -350,7 +304,9 @@ watch(
 )
 watch(
   () => selected,
+
   newValue => {
+    debugger
     if (!newValue) {
       selectedErrors.value = true
     } else {
@@ -368,63 +324,370 @@ watch(
     }
   },
 )
+watch(
+  () => formData.value.address,
+  newValue => {
+    if (!newValue) {
+      addressErrors.value = ['This field is required']
+    } else {
+      addressErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.pincode,
+  newValue => {
+    if (!newValue) {
+      pincodeErrors.value = ['This field is required']
+    } else {
+      pincodeErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.city,
+  newValue => {
+    if (!newValue) {
+      cityErrors.value = ['This field is required']
+    } else {
+      cityErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.district,
+  newValue => {
+    if (!newValue) {
+      districtErrors.value = ['This field is required']
+    } else {
+      districtErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.state,
+  newValue => {
+    if (!newValue) {
+      stateErrors.value = ['This field is required']
+    } else {
+      stateErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.country,
+  newValue => {
+    if (!newValue) {
+      countryErrors.value = ['This field is required']
+    } else {
+      countryErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.micr,
+  newValue => {
+    if (!newValue) {
+      micrErrors.value = ['This field is required']
+    } else {
+      micrErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.accountType,
+  newValue => {
+    if (!newValue) {
+      accountTypeErrors.value = ['This field is required']
+    } else {
+      accountTypeErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.ifsc,
+  newValue => {
+    if (!newValue) {
+      ifscErrors.value = ['This field is required']
+    } else {
+      ifscErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.accountNumber,
+  newValue => {
+    if (!newValue) {
+      accountNumberErrors.value = ['This field is required']
+    } else {
+      accountNumberErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.bankName,
+  newValue => {
+    if (!newValue) {
+      bankNameErrors.value = ['This field is required']
+    } else {
+      bankNameErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.bankAddress,
+  newValue => {
+    if (!newValue) {
+      bankAddressErrors.value = ['This field is required']
+    } else {
+      bankAddressErrors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.address1,
+  newValue => {
+    if (!newValue) {
+      address1Errors.value = ['This field is required']
+    } else {
+      address1Errors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.pincode1,
+  newValue => {
+    if (!newValue) {
+      pincode1Errors.value = ['This field is required']
+    } else {
+      pincode1Errors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.city1,
+  newValue => {
+    if (!newValue) {
+      city1Errors.value = ['This field is required']
+    } else {
+      city1Errors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.district1,
+  newValue => {
+    if (!newValue) {
+      district1Errors.value = ['This field is required']
+    } else {
+      district1Errors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.state1,
+  newValue => {
+    if (!newValue) {
+      state1Errors.value = ['This field is required']
+    } else {
+      state1Errors.value = []
+    }
+  },
+)
+watch(
+  () => formData.value.country1,
+  newValue => {
+    if (!newValue) {
+      country1Errors.value = ['This field is required']
+    } else {
+      country1Errors.value = []
+    }
+  },
+)
 function validateStep1() {
+  debugger
   // Validate fields for step 1
-  if (
-    formData.value.fname != null &&
-    formData.value.fname != '' &&
-    formData.value.name != null &&
-    formData.value.name != '' &&
-    formData.value.email != null &&
-    formData.value.email != '' &&
-    formData.value.pan != null &&
-    formData.value.pan != '' &&
-    formData.value.dob != null &&
-    formData.value.dob != '' &&
-    formData.value.adhar != null &&
-    formData.value.adhar != '' &&
-    formData.value.branchCode != null &&
-    formData.value.branchCode != '' &&
-    formData.value.education != null &&
-    formData.value.education != '' &&
-    selectedGender.value != '' &&
-    selectedGender.value != null &&
-    selectedmStatus.value != null &&
-    selectedmStatus.value != '' &&
-    selected.value != null &&
-    selected.value != ''
-  ) {
-    return true
-  } else {
-    // Show error messages for invalid fields
-    nameErrors.value = ['This field is required']
-    fnameErrors.value = ['This field is required']
-    emailErrors.value = ['This field is required']
-    phoneErrors.value = ['This field is required']
-    panErrors.value = ['This field is required']
-    dobErrors.value = ['This field is required']
-    adharErrors.value = ['This field is required']
-    educationErrors.value = ['This field is required']
-    branchErrors.value = ['This field is required']
-    genderErrors.value = true
-    mstatusErrors.value = true
-    selectedErrors.value = true
-    return false
+  let isValid = true
+  if (formData.value.fname == '' || formData.value.fname.length < 4) {
+    if (formData.value.fname == '' && formData.value.fname.length == 0) {
+      fnameErrors.value = ['This field is required']
+      isValid = false
+    } else if (formData.value.fname.length < 4) {
+      isValid = false
+      fnameErrors.value = ['This field must be greater than 4 charecters']
+    }
   }
+  if (formData.value.name == '' || formData.value.name.length < 4) {
+    if (formData.value.name == '' && formData.value.name.length == 0) {
+      nameErrors.value = ['This field is required']
+      isValid = false
+    } else if (formData.value.name.length < 4) {
+      isValid = false
+      nameErrors.value = ['This field must be greater than 4 charecters']
+    }
+  }
+
+  if (formData.value.email == '' || !emailRegex.test(formData.value.email)) {
+    if (formData.value.email == '' && formData.value.email.length == 0) {
+      emailErrors.value = ['This field is required']
+      isValid = false
+    } else if (!emailRegex.test(formData.value.email)) {
+      emailErrors.value = ['Invalid email address']
+      isValid = false
+    }
+  }
+  if (formData.value.phone == '' || formData.value.phone.length != 10) {
+    if (formData.value.phone == '' && formData.value.phone.length == 0) {
+      phoneErrors.value = ['This field is required']
+      isValid = false
+    } else if (formData.value.phone.length != 10) {
+      phoneErrors.value = ['Invalid Mobile Number']
+      isValid = false
+    }
+  }
+  if (formData.value.adhar == '' || formData.value.adhar.length != 4) {
+    if (formData.value.adhar == '' && formData.value.adhar.length == 0) {
+      adharErrors.value = ['This field is required']
+      isValid = false
+    } else if (formData.value.phone.length != 4) {
+      adharErrors.value = ['This field must be only 4 digits']
+      isValid = false
+    }
+  }
+  if (formData.value.pan == '') {
+    panErrors.value = ['This field is required']
+    isValid = false
+  }
+  if (formData.value.dob == '') {
+    dobErrors.value = ['This field is required']
+    isValid = false
+  }
+
+  if (formData.value.branchCode == '') {
+    branchErrors.value = ['This field is required']
+    isValid = false
+  }
+
+  if (formData.value.education == '') {
+    educationErrors.value = ['This field is required']
+    isValid = false
+  }
+  if (selectedGender.value == '') {
+    genderErrors.value = true
+    isValid = false
+  }
+  if (selectedmStatus.value == '') {
+    mstatusErrors.value = true
+    isValid = false
+  }
+  if (selected.value == '') {
+    selectedErrors.value = true
+    isValid = false
+  }
+  return isValid
 }
 
 function validateStep2() {
-  // Validate fields for step 2
-  // ...
-  return true
+  let valid = true
+  if (formData.value.address == '') {
+    addressErrors.value = ['This field is required']
+    valid = false
+  }
+  if (formData.value.pincode == '' || formData.value.pincode.length != 6) {
+    if (formData.value.pincode == '' || formData.value.pincode.length == 0) {
+      pincodeErrors.value = ['This field is required']
+      valid = false
+    } else if (formData.value.pincode.length != 6) {
+      pincodeErrors.value = ['Enter valid Pincode']
+      valid = false
+    }
+  }
+  if (formData.value.city == '') {
+    cityErrors.value = ['This field is required']
+    valid = false
+  }
+  if (formData.value.district == '') {
+    districtErrors.value = ['This field is required']
+    valid = false
+  }
+  if (formData.value.state == '') {
+    stateErrors.value = ['This field is required']
+    valid = false
+  }
+  if (formData.value.country == '') {
+    countryErrors.value = ['This field is required']
+    valid = false
+  }
+  if (formData.value.apAddress == true) {
+    if (formData.value.address1 == '') {
+      address1Errors.value = ['This field is required']
+      valid = false
+    }
+    if (formData.value.pincode1 == '' || formData.value.pincode1.length != 6) {
+      if (formData.value.pincode1 == '' || formData.value.pincode1.length == 0) {
+        pincode1Errors.value = ['This field is required']
+        valid = false
+      } else if (formData.value.pincode1.length != 6) {
+        pincode1Errors.value = ['Enter valid Pincode']
+        valid = false
+      }
+    }
+    if (formData.value.city1 == '') {
+      city1Errors.value = ['This field is required']
+      valid = false
+    }
+    if (formData.value.district1 == '') {
+      district1Errors.value = ['This field is required']
+      valid = false
+    }
+    if (formData.value.state1 == '') {
+      state1Errors.value = ['This field is required']
+      valid = false
+    }
+    if (formData.value.country1 == '') {
+      country1Errors.value = ['This field is required']
+      valid = false
+    }
+  }
+  return valid
 }
 
 function validateStep3() {
-  // Validate fields for step 3
-  // ...
-  return true
+  let check = true
+  if (formData.value.micr == '') {
+    micrErrors.value = ['This field is required']
+    check = false
+  }
+  if (formData.value.accountType == '') {
+    accountTypeErrors.value = ['This field is required']
+    check = false
+  }
+  if (formData.value.ifsc == '' || !ifscRegx.test(formData.value.ifsc)) {
+    if (formData.value.ifsc == '' && formData.value.ifsc.length == 0) {
+      ifscErrors.value = ['This field is required']
+      check = false
+    } else if (!ifscRegx.test(formData.value.ifsc)) {
+      ifscErrors.value = ['Invalid IFSC Code']
+      check = false
+    }
+  }
+  if (formData.value.accountNumber == '') {
+    accountNumberErrors.value = ['This field is required']
+    check = false
+  }
+  if (formData.value.bankName == '') {
+    bankNameErrors.value = ['This field is required']
+    check = false
+  }
+  if (formData.value.bankAddress == '') {
+    bankAddressErrors.value = ['This field is required']
+    check = false
+  }
+  return check
 }
 function validateForm() {
+  debugger
+
   if (currentStep.value === 0) {
     if (validateStep1()) {
       currentStep.value++
@@ -438,6 +701,9 @@ function validateForm() {
       currentStep.value++
     }
   }
+}
+function apAddressClick(val: boolean) {
+  val = !val
 }
 </script>
 
@@ -504,7 +770,7 @@ label input[type='radio']:checked + span {
 
             <label
               :for="'step' + (index + 1)"
-              class="w-9 h-8 rounded-full flex justify-center items-center"
+              class="w-8 h-8 rounded-full flex justify-center items-center"
               :class="
                 currentStep === index || currentStep >= index ? 'bg-blue-900 text-white' : 'bg-gray-300 text-gray-700'
               "
@@ -512,8 +778,8 @@ label input[type='radio']:checked + span {
               {{ index + 1 }}
             </label>
             <div class="">
-              <div class="text-gray-700 font-semibold text-[15px]">{{ step.title }}</div>
-              <div class="text-gray-500 text-sm">{{ step.subtitle }}</div>
+              <div class="text-gray-700 font-semibold text-[14px]">{{ step.title }}</div>
+              <!-- <div class="text-gray-500 text-sm">{{ step.subtitle }}</div> -->
             </div>
             <div
               style="font-size: 25px; margin-left: 15px; margin-bottom: 20px"
@@ -549,6 +815,7 @@ label input[type='radio']:checked + span {
                     v-model="formData.name"
                     placeholder="John"
                     label="Name *"
+                    id="name"
                     :error-messages="nameErrors"
                     :rules="[requiredValidator]"
                   />
@@ -562,6 +829,7 @@ label input[type='radio']:checked + span {
                     v-model="formData.fname"
                     placeholder="Johny"
                     label="Father's Name *"
+                    id="fname"
                     :error-messages="fnameErrors"
                     :rules="[requiredValidator]"
                   />
@@ -575,6 +843,7 @@ label input[type='radio']:checked + span {
                     placeholder="john@gmail.com"
                     label="Email *"
                     :error-messages="emailErrors"
+                    id="email"
                     :rules="[requiredValidator]"
                   />
                 </VCol>
@@ -587,6 +856,7 @@ label input[type='radio']:checked + span {
                     v-model="formData.phone"
                     placeholder="9876543210"
                     label="Phone *"
+                    type="number"
                     :error-messages="phoneErrors"
                     :rules="[requiredValidator]"
                   />
@@ -606,9 +876,12 @@ label input[type='radio']:checked + span {
                   >
                   <VRow>
                     <div
+                      :style="genderErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
                       :class="
                         selectedGender == 'option1'
                           ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                          : genderErrors == true
+                          ? '  border border-red-500  w-30 p-5 py-2 rounded-md text-red-500 '
                           : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
                       "
                       class="mx-3"
@@ -623,9 +896,12 @@ label input[type='radio']:checked + span {
                       Male
                     </div>
                     <div
+                      :style="genderErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
                       :class="
                         selectedGender == 'option2'
                           ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                          : genderErrors == true
+                          ? '  border border-red-500  w-30 p-5 py-2 rounded-md text-red-500 '
                           : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
                       "
                       class="mx-3"
@@ -640,9 +916,12 @@ label input[type='radio']:checked + span {
                       Female
                     </div>
                     <div
+                      :style="genderErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
                       :class="
                         selectedGender == 'option3'
                           ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                          : genderErrors == true
+                          ? '  border border-red-500  w-30 p-5 py-2 rounded-md text-red-500 '
                           : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
                       "
                       class="mx-3"
@@ -672,9 +951,12 @@ label input[type='radio']:checked + span {
                   >
                   <VRow>
                     <div
+                      :style="mstatusErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
                       :class="
                         selectedmStatus == 'Single'
                           ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                          : mstatusErrors == true
+                          ? '  border border-red-800 w-30 p-5 py-2 rounded-md text-red-500 '
                           : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
                       "
                       class="mx-3"
@@ -688,9 +970,12 @@ label input[type='radio']:checked + span {
                       Single
                     </div>
                     <div
+                      :style="mstatusErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
                       :class="
                         selectedmStatus == 'Married'
                           ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                          : mstatusErrors == true
+                          ? '  border border-red-800 w-30 p-5 py-2 rounded-md text-red-500 '
                           : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
                       "
                       class="mx-3"
@@ -726,9 +1011,9 @@ label input[type='radio']:checked + span {
                 >
                   <VTextField
                     v-model="formData.dob"
-                    placeholder=""
+                    placeholder="DD-MM-YYYY"
                     label="Date of Birth *"
-                    type="datepicker"
+                    type="date"
                     :error-messages="dobErrors"
                     :rules="[requiredValidator]"
                   />
@@ -739,6 +1024,7 @@ label input[type='radio']:checked + span {
                 >
                   <VTextField
                     v-model="formData.adhar"
+                    type="number"
                     placeholder="2345"
                     label="Aadhaar Number (Last 4 Digits Only)  *"
                     :error-messages="adharErrors"
@@ -786,6 +1072,7 @@ label input[type='radio']:checked + span {
                   >
                     <VCheckbox
                       v-model="selected"
+                      @click="selectedcheck('NSE [CASH, FNO, COMMODITY, CURRENCY]')"
                       value="NSE [CASH, FNO, COMMODITY, CURRENCY]"
                     >
                       <template v-slot:label>
@@ -799,6 +1086,7 @@ label input[type='radio']:checked + span {
                   >
                     <VCheckbox
                       v-model="selected"
+                      @click="selectedcheck('BSE [CASH, FNO, COMMODITY, CURRENCY]')"
                       value="BSE [CASH, FNO, COMMODITY, CURRENCY]"
                     >
                       <template v-slot:label>
@@ -812,6 +1100,7 @@ label input[type='radio']:checked + span {
                   >
                     <VCheckbox
                       v-model="selected"
+                      @click="selectedcheck('MCX [FNO]')"
                       value="MCX [FNO]"
                     >
                       <template v-slot:label>
@@ -851,6 +1140,7 @@ label input[type='radio']:checked + span {
                     label="Pin Code *"
                     placeholder="613601"
                     v-model="formData.pincode"
+                    type="number"
                     :error-messages="pincodeErrors"
                     :rules="[requiredValidator]"
                   />
@@ -951,8 +1241,8 @@ label input[type='radio']:checked + span {
                     style="padding-top: 4px; padding-left: 2px"
                   >
                     <VCheckbox
-                      v-model="ApAddress"
-                      value="ApAddress"
+                      v-model="formData.apAddress"
+                      @click="apAddressClick(formData.apAddress)"
                     >
                       <template v-slot:label>
                         <span style="font-size: 15px; color: gray">AP Address Same As Permanent Address</span>
@@ -966,8 +1256,17 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextarea
-                    label="Address"
+                    label="Address *"
+                    placeholder="Address *"
+                    v-if="formData.apAddress"
+                    v-model="formData.address1"
+                    :error-messages="address1Errors"
+                    :rules="[requiredValidator]"
+                  />
+                  <VTextarea
+                    label="Address "
                     placeholder="Address "
+                    v-if="!formData.apAddress"
                   />
                 </VCol>
 
@@ -976,8 +1275,19 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
+                    label="Pin Code *"
+                    placeholder="613601 "
+                    type="number"
+                    v-if="formData.apAddress"
+                    v-model="formData.pincode1"
+                    :error-messages="pincode1Errors"
+                    :rules="[requiredValidator]"
+                  />
+                  <VTextField
                     label="Pin Code "
+                    type="number"
                     placeholder="613601"
+                    v-if="!formData.apAddress"
                   />
                 </VCol>
 
@@ -985,9 +1295,18 @@ label input[type='radio']:checked + span {
                   cols="12"
                   md="6"
                 >
+                  <VTextField
+                    label="City / Town * "
+                    placeholder="Chennai "
+                    v-if="formData.apAddress"
+                    v-model="formData.city1"
+                    :error-messages="city1Errors"
+                    :rules="[requiredValidator]"
+                  />
                   <VTextField
                     label="City / Town  "
                     placeholder="Chennai"
+                    v-if="!formData.apAddress"
                   />
                 </VCol>
                 <VCol
@@ -995,8 +1314,17 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
+                    label="District *"
+                    placeholder="Thanjavur"
+                    v-if="formData.apAddress"
+                    v-model="formData.district1"
+                    :error-messages="district1Errors"
+                    :rules="[requiredValidator]"
+                  />
+                  <VTextField
                     label="District "
                     placeholder="Thanjavur"
+                    v-if="!formData.apAddress"
                   />
                 </VCol>
 
@@ -1004,10 +1332,20 @@ label input[type='radio']:checked + span {
                   cols="12"
                   md="6"
                 >
+                  <VSelect
+                    label="State / U.T Code * "
+                    placeholder="Select State"
+                    :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                    v-if="formData.apAddress"
+                    v-model="formData.state1"
+                    :error-messages="state1Errors"
+                    :rules="[requiredValidator]"
+                  />
                   <VSelect
                     label="State / U.T Code "
                     placeholder="Select State"
                     :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                    v-if="!formData.apAddress"
                   />
                 </VCol>
                 <VCol
@@ -1015,10 +1353,20 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VSelect
-                    v-model="formData.language"
-                    label="Country / ISO Code "
+                    label="Country / ISO Code *"
                     placeholder="Select Country"
                     :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                    v-if="formData.apAddress"
+                    v-model="formData.country1"
+                    :error-messages="country1Errors"
+                    :rules="[requiredValidator]"
+                  />
+                  <VSelect
+                    v-model="formData.country1"
+                    label="Country / ISO Code *"
+                    placeholder="Select Country"
+                    :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                    v-if="!formData.apAddress"
                   />
                 </VCol>
               </VRow>
@@ -1036,10 +1384,12 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VSelect
-                    v-model="formData.language"
+                    v-model="formData.accountType"
                     label="Account Type * "
                     placeholder="Select AccountType "
-                    :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                    :items="['Savings Account', 'Salary Account', 'Fixed Account']"
+                    :error-messages="accountTypeErrors"
+                    :rules="[requiredValidator]"
                   />
                 </VCol>
 
@@ -1048,9 +1398,11 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
-                    v-model="formData.facebook"
+                    v-model="formData.ifsc"
                     placeholder="IFSC Code *"
                     label="IFSC Code *"
+                    :error-messages="ifscErrors"
+                    :rules="[requiredValidator]"
                   />
                 </VCol>
 
@@ -1059,9 +1411,12 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
-                    v-model="formData.googlePlus"
+                    v-model="formData.accountNumber"
                     placeholder="Account Number *"
                     label="Account Number * "
+                    type="number"
+                    :error-messages="accountNumberErrors"
+                    :rules="[requiredValidator]"
                   />
                 </VCol>
 
@@ -1070,9 +1425,11 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
-                    v-model="formData.LinkedIn"
+                    v-model="formData.bankName"
                     placeholder="Bank Name *"
                     label="Bank Name *"
+                    :error-messages="bankNameErrors"
+                    :rules="[requiredValidator]"
                   />
                 </VCol>
 
@@ -1081,9 +1438,11 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
-                    v-model="formData.LinkedIn"
+                    v-model="formData.micr"
                     placeholder="MICR Code *"
                     label="MICR Code *"
+                    :error-messages="micrErrors"
+                    :rules="[requiredValidator]"
                   />
                 </VCol>
                 <VCol
@@ -1092,7 +1451,10 @@ label input[type='radio']:checked + span {
                 >
                   <VTextarea
                     label="Bank Address *"
+                    v-model="formData.bankAddress"
                     placeholder="Address *"
+                    :error-messages="bankAddressErrors"
+                    :rules="[requiredValidator]"
                   />
                 </VCol>
               </VRow>
@@ -1110,7 +1472,7 @@ label input[type='radio']:checked + span {
                 >
                   <VCard>
                     <div
-                      v-if="avatar1 == null"
+                      v-if="!avatar1"
                       class="p-5 py-10"
                     >
                       <VFileInput
@@ -1120,10 +1482,11 @@ label input[type='radio']:checked + span {
                         placeholder="Pick a Proof"
                         prepend-icon="ri-attachment-line"
                         @update:model-value="handleAvatarUpdate1"
+                        show-details
                       />
                     </div>
                     <div
-                      v-else
+                      v-if="avatar1"
                       class="relative"
                     >
                       <div class="flex justify-center">
@@ -1134,11 +1497,16 @@ label input[type='radio']:checked + span {
                           height="400"
                         />
                       </div>
-                      <div
-                        class="absolute top-5 right-5 bg-red-500 border p-2 rounded-md text-white"
-                        @click="removeAvatar1"
-                      >
-                        Remove
+                      <div class="absolute top-0 right-0 left-0 bg-white">
+                        <div class="flex justify-between">
+                          <div class="font-bold px-5 py-5">PAN</div>
+                          <div
+                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                            @click="handleAvatarUpdate1(null)"
+                          >
+                            Remove
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </VCard>
@@ -1149,7 +1517,7 @@ label input[type='radio']:checked + span {
                 >
                   <VCard>
                     <div
-                      v-if="avatar2 == null"
+                      v-if="!avatar2"
                       class="p-5 py-10"
                     >
                       <VFileInput
@@ -1162,7 +1530,7 @@ label input[type='radio']:checked + span {
                       />
                     </div>
                     <div
-                      v-else
+                      v-if="avatar2"
                       class="relative"
                     >
                       <div class="flex justify-center">
@@ -1173,11 +1541,16 @@ label input[type='radio']:checked + span {
                           height="400"
                         />
                       </div>
-                      <div
-                        class="absolute top-5 right-5 bg-red-500 border p-2 rounded-md text-white"
-                        @click="removeAvatar2"
-                      >
-                        Remove
+                      <div class="absolute top-0 right-0 left-0 bg-white">
+                        <div class="flex justify-between">
+                          <div class="font-bold px-5 py-5">EDUCATION PROOF</div>
+                          <div
+                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                            @click="handleAvatarUpdate2(null)"
+                          >
+                            Remove
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </VCard>
@@ -1188,7 +1561,7 @@ label input[type='radio']:checked + span {
                 >
                   <VCard>
                     <div
-                      v-if="avatar == null"
+                      v-if="!avatar"
                       class="p-5 py-10"
                     >
                       <VFileInput
@@ -1202,20 +1575,27 @@ label input[type='radio']:checked + span {
                       />
                     </div>
                     <div
-                      v-else
+                      v-if="avatar"
                       class="relative"
                     >
-                      <div class="flex justify-center">
-                        <img
-                          :src="imageUrl"
-                          alt="Avatar"
+                      <div class="flex justify-center items-center">
+                        <object
+                          :data="imageUrl"
+                          width="100%"
+                          height="400"
                         />
                       </div>
-                      <div
-                        class="absolute top-5 right-5 bg-red-500 border p-2 rounded-md text-white"
-                        @click="removeAvatar"
-                      >
-                        Remove
+
+                      <div class="absolute top-0 right-0 left-0 bg-white">
+                        <div class="flex justify-between">
+                          <div class="font-bold px-5 py-5">PHOTO</div>
+                          <div
+                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                            @click="handleAvatarUpdate(null)"
+                          >
+                            Remove
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </VCard>
@@ -1226,7 +1606,7 @@ label input[type='radio']:checked + span {
                 >
                   <VCard>
                     <div
-                      v-if="avatar3 == null"
+                      v-if="!avatar3"
                       class="p-5 py-10"
                     >
                       <VFileInput
@@ -1239,7 +1619,7 @@ label input[type='radio']:checked + span {
                       />
                     </div>
                     <div
-                      v-else
+                      v-if="avatar3"
                       class="relative"
                     >
                       <div class="flex justify-center">
@@ -1250,11 +1630,16 @@ label input[type='radio']:checked + span {
                           height="400"
                         />
                       </div>
-                      <div
-                        class="absolute top-5 right-5 bg-red-500 border p-2 rounded-md text-white"
-                        @click="removeAvatar3"
-                      >
-                        Remove
+                      <div class="absolute top-0 right-0 left-0 bg-white">
+                        <div class="flex justify-between">
+                          <div class="font-bold px-5 py-5">ADDRESS PROOF</div>
+                          <div
+                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                            @click="handleAvatarUpdate3(null)"
+                          >
+                            Remove
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </VCard>
@@ -1265,7 +1650,7 @@ label input[type='radio']:checked + span {
                 >
                   <VCard>
                     <div
-                      v-if="avatar4 == null"
+                      v-if="!avatar4"
                       class="p-5 py-10"
                     >
                       <VFileInput
@@ -1278,7 +1663,7 @@ label input[type='radio']:checked + span {
                       />
                     </div>
                     <div
-                      v-else
+                      v-if="avatar4"
                       class="relative"
                     >
                       <div class="flex justify-center">
@@ -1289,17 +1674,23 @@ label input[type='radio']:checked + span {
                           height="400"
                         />
                       </div>
-                      <div
-                        class="absolute top-5 right-5 bg-red-500 border p-2 rounded-md text-white"
-                        @click="removeAvatar4"
-                      >
-                        Remove
+                      <div class="absolute top-0 right-0 left-0 bg-white">
+                        <div class="flex justify-between">
+                          <div class="font-bold px-5 py-5">AP ADDRESS PROOF</div>
+                          <div
+                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                            @click="handleAvatarUpdate4(null)"
+                          >
+                            Remove
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </VCard>
                 </VCol>
               </VRow>
               <VCol><div class="text-blue-600 py-2">DECLARATION</div></VCol>
+
               <VCol>
                 <div
                   class="demo-space-x"
@@ -1307,7 +1698,6 @@ label input[type='radio']:checked + span {
                 >
                   <VCheckbox
                     v-model="declaration"
-                    value="false"
                     @click="changedeclaration"
                   >
                     <template v-slot:label>
@@ -1328,6 +1718,7 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
+                    v-model="formData.branchCode"
                     placeholder="GPMZ0001"
                     label="Your Code *"
                     :error-messages="nameErrors"
@@ -1341,6 +1732,7 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
+                    v-model="formData.name"
                     placeholder="TESTQ"
                     label="Client Name *"
                     :error-messages="nameErrors"
@@ -1353,6 +1745,7 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
+                    v-model="formData.district"
                     placeholder="CHENNAI"
                     label="Place *"
                     :error-messages="nameErrors"
@@ -1365,6 +1758,7 @@ label input[type='radio']:checked + span {
                   md="6"
                 >
                   <VTextField
+                    v-model="formData.dob"
                     placeholder="04-10-2024"
                     label="Date *"
                     :error-messages="nameErrors"
