@@ -598,6 +598,24 @@ export default defineComponent({
 </script>
 
 <style scoped>
+[type='text'],
+input:where(:not([type])),
+[type='email'],
+[type='url'],
+[type='password'],
+[type='number'],
+[type='date'],
+[type='datetime-local'],
+[type='month'],
+[type='search'],
+[type='tel'],
+[type='time'],
+[type='week'],
+[multiple],
+textarea,
+select {
+  --tw-ring-color: none !important;
+}
 .slide-container {
   position: relative;
   height: 450px; /* Adjust as needed */
