@@ -14,13 +14,17 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center prof">
         <!-- 👉 Vertical nav toggle in overlay mode -->
-        <IconBtn
+        <!-- <IconBtn
           class="ms-n3 d-lg-none"
           @click="toggleVerticalOverlayNavActive(true)"
         >
           <VIcon icon="ri-menu-line" />
-        </IconBtn>
-
+        </IconBtn> -->
+        <img
+          src="@/public/logochange.png"
+          alt=""
+          class="h-10 w-14"
+        />
         <!-- 👉 Search -->
 
         <VSpacer />

@@ -23,11 +23,14 @@ let avatar3 = ref(null)
 let avatar4 = ref(null)
 let avatar1 = ref(null)
 
-const imageUrl1 = ref(null)
-
+let imageUrl1 = ref(null)
+let imageUrl = ref(null)
+let panpdfname = ref(null)
+let eppdfname = ref(null)
 watch(avatar1, newAvatar => {
   if (newAvatar) {
     debugger
+
     imageUrl1.value = URL.createObjectURL(newAvatar[0])
   } else {
     imageUrl1.value = null
@@ -38,6 +41,7 @@ function handleAvatarUpdate1(newAvatar) {
   debugger
   avatar1.value = newAvatar
   imageUrl1.value = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+  panpdfname.value = newAvatar ? newAvatar[0].name : null
 }
 
 watch(avatar2, newAvatar => {
@@ -53,6 +57,7 @@ function handleAvatarUpdate2(newAvatar) {
   debugger
   avatar2.value = newAvatar
   imageUrl2.value = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+  eppdfname.value = newAvatar ? newAvatar[0].name : null
 }
 watch(avatar3, newAvatar => {
   if (newAvatar) {
@@ -532,7 +537,7 @@ function validateStep1() {
       emailErrors.value = ['This field is required']
       isValid = false
     } else if (!emailRegex.test(formData.value.email)) {
-      emailErrors.value = ['Invalid email address']
+      emailErrors.value = ['Invalid email address ']
       isValid = false
     }
   }
@@ -667,7 +672,7 @@ function validateStep3() {
       ifscErrors.value = ['This field is required']
       check = false
     } else if (!ifscRegx.test(formData.value.ifsc)) {
-      ifscErrors.value = ['Invalid IFSC Code']
+      ifscErrors.value = ['Invalid IFSC Code (note: first 4 digit albets next 7 digits alphanumeric)']
       check = false
     }
   }
@@ -686,8 +691,8 @@ function validateStep3() {
   return check
 }
 function validateForm() {
-  debugger
-
+  // debugger
+  // currentStep.value++
   if (currentStep.value === 0) {
     if (validateStep1()) {
       currentStep.value++
@@ -705,6 +710,9 @@ function validateForm() {
 function apAddressClick(val: boolean) {
   val = !val
 }
+const isDialogVisible = ref(false)
+const isPanDialogVisible = ref(false)
+const isEpDialogVisible = ref(false)
 </script>
 
 <style lang="scss">
@@ -739,336 +747,517 @@ label span {
 label input[type='radio']:checked + span {
   color: #666;
 }
+.button-effect {
+  padding: 0px 0px;
+  a {
+    margin-right: 17px;
+    padding-bottom: 30px;
+    padding-top: 10px;
+    background-color: #1e3a8a;
+  }
+}
+.effect {
+  text-align: center;
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  color: white;
+  text-transform: capitalize;
+  /* background-color: - add your own background-color */
+  font: {
+    family: 'Roboto', sans-serif; /* put your font-family */
+    size: 18px;
+  }
+  padding: 20px 0px;
+  width: 150px;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.effect.effect-5 {
+  transition: all 0.2s linear 0s;
+
+  &:before {
+    content: '←';
+    font-family: FontAwesome;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0px;
+    height: 100%;
+    width: 30px;
+    // background-color: rgba(gray, 0.3);
+    border-radius: 0 50% 50% 0;
+    transform: scale(0, 1);
+    transform-origin: left center;
+    transition: all 0.2s linear 0s;
+  }
+
+  &:hover {
+    text-indent: 30px;
+
+    &:before {
+      transform: scale(1, 1);
+      text-indent: 0;
+    }
+  }
+}
+.effect.effect-1 {
+  transition: all 0.2s linear 0s;
+
+  &:before {
+    content: '→';
+
+    font-size: 15px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    height: 100%;
+    width: 40px;
+    transition: all 0.2s linear 0s;
+  }
+
+  &:hover {
+    text-indent: -20px;
+
+    &:before {
+      opacity: 1;
+      text-indent: 0px;
+    }
+  }
+}
+.is-disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.buttonsubmit {
+  width: 270px;
+  height: 80px;
+  border: none;
+  outline: none;
+  background: #2f2f2f;
+  color: #fff;
+  font-size: 22px;
+  border-radius: 40px;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+// .check-boxsubmit {
+//   width: 80px;
+//   height: 80px;
+//   border-radius: 40px;
+//   box-shadow: 0 0 12px -2px rgba(0, 0, 0, 0.5);
+//   position: absolute;
+//   top: 0;
+//   right: -40px;
+//   opacity: 0;
+// }
+
+// .check-boxsubmit svg {
+//   width: 40px;
+//   margin: 20px;
+// }
+
+// svg path {
+//   stroke-width: 3;
+//   stroke: #fff;
+//   stroke-dasharray: 34;
+//   stroke-dashoffset: 34;
+//   stroke-linecap: round;
+// }
+
+// .active {
+//   background: #ff2b75;
+//   transition: 1s;
+// }
+
+// .active .check-boxsubmit {
+//   right: 0;
+//   opacity: 1;
+//   transition: 1s;
+// }
+
+// .active p {
+//   margin-right: 125px;
+//   transition: 1s;
+// }
+
+// .active svg path {
+//   stroke-dashoffset: 0;
+//   transition: 1s;
+//   transition-delay: 1s;
+// }
+// .c-stepper {
+//   display: flex;
+//   flex-wrap: wrap;
+// }
+
+// .c-stepper__item {
+//   display: flex;
+//   align-items: center;
+//   gap: 0.5rem;
+// }
+
+// .c-stepper__item:not(:last-child) {
+//   flex: 1;
+// }
+
+// .c-stepper__item:before {
+//   --size: 3rem;
+//   content: '';
+//   display: block;
+//   flex: 0 0 var(--size);
+//   height: var(--size);
+//   border-radius: 50%;
+// }
+.line {
+  width: 120px;
+  height: 0;
+
+  margin-right: 20px;
+  margin-bottom: 7px;
+  display: inline-block;
+}
 </style>
 
 <template>
-  <VCard>
-    <!-- <div class="flex justify-center my-5">
-      <img
-        src="@/public/goodwilllogo.jpeg"
-        alt="Logo"
-        class="h-20 w-20"
-      />
-    </div> -->
+  <VCard class="ml-6 mb-3 text-sm">
+    <VCardText class="space-x-4">
+      <div class="flex justify-between items-center">
+        <div
+          v-for="(step, index) in numberedSteps"
+          :key="index"
+          class="flex items-center space-x-4"
+        >
+          <input
+            type="radio"
+            name="step"
+            id="step{{ index + 1 }}"
+            v-model="currentStep"
+            :value="index"
+            :checked="currentStep === index"
+          />
 
-    <VCard>
-      <VCardText>
-        <div class="flex justify-between items-center">
-          <div
-            v-for="(step, index) in numberedSteps"
-            :key="index"
-            class="flex items-center space-x-2"
+          <label
+            :for="'step' + (index + 1)"
+            class="w-8 h-8 rounded-full flex justify-center items-center"
+            :class="
+              currentStep === index || currentStep >= index ? 'bg-blue-900 text-white' : 'bg-gray-300 text-gray-700'
+            "
           >
-            <input
-              type="radio"
-              name="step"
-              id="step{{ index + 1 }}"
-              v-model="currentStep"
-              :value="index"
-              :checked="currentStep === index"
-            />
-
-            <label
-              :for="'step' + (index + 1)"
-              class="w-8 h-8 rounded-full flex justify-center items-center"
-              :class="
-                currentStep === index || currentStep >= index ? 'bg-blue-900 text-white' : 'bg-gray-300 text-gray-700'
-              "
-            >
-              {{ index + 1 }}
-            </label>
-            <div class="">
-              <div class="text-gray-700 font-semibold text-[14px]">{{ step.title }}</div>
-              <!-- <div class="text-gray-500 text-sm">{{ step.subtitle }}</div> -->
-            </div>
+            {{ index + 1 }}
+          </label>
+          <div class="">
+            <div class="text-gray-700 font-semibold text-[14px]">{{ step.title }}</div>
+            <!-- <div class="text-gray-500 text-sm">{{ step.subtitle }}</div> -->
+          </div>
+          <div
+            style="font-size: 25px; margin-left: 15px"
+            :class="currentStep >= index ? 'text-blue-900' : ' text-gray-300'"
+            v-if="index < numberedSteps.length - 1"
+          >
             <div
-              style="font-size: 25px; margin-left: 15px; margin-bottom: 20px"
-              :class="currentStep >= index ? 'text-blue-900' : ' text-gray-300'"
-              v-if="index < numberedSteps.length - 1"
-            >
-              _______
-            </div>
+              class="line"
+              :style="currentStep >= index ? 'border: 1px solid #1E3A8A ' : ' border: 1px solid #c4c4c4'"
+            ></div>
           </div>
         </div>
-      </VCardText>
+      </div>
+    </VCardText>
 
-      <VDivider />
+    <VDivider />
 
-      <VCardText>
-        <VForm>
-          <VWindow
-            v-model="currentStep"
-            class="disable-tab-transition"
-          >
-            <VWindowItem>
-              <VRow>
-                <VCol cols="12">
-                  <h6 class="text-sm font-weight-medium">Personal Details</h6>
-                  <p class="text-xs mb-0">Enter your Personal Details</p>
-                </VCol>
+    <VCardText>
+      <VForm>
+        <VWindow
+          v-model="currentStep"
+          class="disable-tab-transition"
+        >
+          <VWindowItem>
+            <VRow>
+              <!-- <VCol cols="12">
+                <h6 class="text-sm font-weight-medium">Personal Details</h6>
+                <p class="text-xs mb-0">Enter your Personal Details</p>
+              </VCol> -->
 
-                <VCol
-                  cols="12"
-                  md="6"
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  v-model="formData.name"
+                  placeholder="John"
+                  label="Name *"
+                  id="name"
+                  :error-messages="nameErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  v-model="formData.fname"
+                  placeholder="Johny"
+                  label="Father's Name *"
+                  id="fname"
+                  :error-messages="fnameErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  v-model="formData.email"
+                  placeholder="john@gmail.com"
+                  label="Email *"
+                  :error-messages="emailErrors"
+                  id="email"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  v-model="formData.phone"
+                  placeholder="9876543210"
+                  label="Phone *"
+                  type="number"
+                  :error-messages="phoneErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VRow
+                  ><label
+                    for="gender"
+                    class="px-3 py-2"
+                    :class="genderErrors == true ? 'text-red-500' : ''"
+                    >Gender *</label
+                  ></VRow
                 >
-                  <VTextField
-                    v-model="formData.name"
-                    placeholder="John"
-                    label="Name *"
-                    id="name"
-                    :error-messages="nameErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.fname"
-                    placeholder="Johny"
-                    label="Father's Name *"
-                    id="fname"
-                    :error-messages="fnameErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.email"
-                    placeholder="john@gmail.com"
-                    label="Email *"
-                    :error-messages="emailErrors"
-                    id="email"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.phone"
-                    placeholder="9876543210"
-                    label="Phone *"
-                    type="number"
-                    :error-messages="phoneErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VRow
-                    ><label
-                      for="gender"
-                      class="px-3 py-5"
-                      :class="genderErrors == true ? 'text-red-500' : ''"
-                      >Gender *</label
-                    ></VRow
+                <VRow>
+                  <div
+                    :style="genderErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
+                    :class="
+                      selectedGender == 'option1'
+                        ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                        : genderErrors == true
+                        ? '  border border-red-500  w-30 p-5 py-2 rounded-md text-red-500 '
+                        : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
+                    "
+                    class="mx-3 my-2"
+                    @click="gender('option1')"
                   >
-                  <VRow>
-                    <div
-                      :style="genderErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
-                      :class="
-                        selectedGender == 'option1'
-                          ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
-                          : genderErrors == true
-                          ? '  border border-red-500  w-30 p-5 py-2 rounded-md text-red-500 '
-                          : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
-                      "
-                      class="mx-3"
-                      @click="gender('option1')"
-                    >
-                      <input
-                        type="radio"
-                        :name="`gender-${selectedGender}`"
-                        value="option1"
-                        class="bg-blue-500 text-white"
-                      />
-                      Male
-                    </div>
-                    <div
-                      :style="genderErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
-                      :class="
-                        selectedGender == 'option2'
-                          ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
-                          : genderErrors == true
-                          ? '  border border-red-500  w-30 p-5 py-2 rounded-md text-red-500 '
-                          : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
-                      "
-                      class="mx-3"
-                      @click="gender('option2')"
-                    >
-                      <input
-                        type="radio"
-                        :name="`gender-${selectedGender}`"
-                        value="option2"
-                        class="bg-blue-500 text-white"
-                      />
-                      Female
-                    </div>
-                    <div
-                      :style="genderErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
-                      :class="
-                        selectedGender == 'option3'
-                          ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
-                          : genderErrors == true
-                          ? '  border border-red-500  w-30 p-5 py-2 rounded-md text-red-500 '
-                          : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
-                      "
-                      class="mx-3"
-                      @click="gender('option3')"
-                    >
-                      <input
-                        type="radio"
-                        :name="`gender-${selectedGender}`"
-                        value="option3"
-                        class="bg-blue-500 text-white"
-                      />
-                      Trans
-                    </div>
-                  </VRow>
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VRow
-                    ><label
-                      for="gender"
-                      class="px-3 py-5"
-                      :class="mstatusErrors == true ? 'text-red-500' : ''"
-                      >Marital Status *</label
-                    ></VRow
+                    <input
+                      type="radio"
+                      :name="`gender-${selectedGender}`"
+                      value="option1"
+                      class="bg-blue-500 text-white"
+                    />
+                    Male
+                  </div>
+                  <div
+                    :style="genderErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
+                    :class="
+                      selectedGender == 'option2'
+                        ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                        : genderErrors == true
+                        ? '  border border-red-500  w-30 p-5 py-2 rounded-md text-red-500 '
+                        : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
+                    "
+                    class="mx-3 my-2"
+                    @click="gender('option2')"
                   >
-                  <VRow>
-                    <div
-                      :style="mstatusErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
-                      :class="
-                        selectedmStatus == 'Single'
-                          ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
-                          : mstatusErrors == true
-                          ? '  border border-red-800 w-30 p-5 py-2 rounded-md text-red-500 '
-                          : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
-                      "
-                      class="mx-3"
-                      @click="mStatus('Single')"
-                    >
-                      <input
-                        type="radio"
-                        value="option1"
-                        class="bg-blue-500 text-white"
-                      />
-                      Single
-                    </div>
-                    <div
-                      :style="mstatusErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
-                      :class="
-                        selectedmStatus == 'Married'
-                          ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
-                          : mstatusErrors == true
-                          ? '  border border-red-800 w-30 p-5 py-2 rounded-md text-red-500 '
-                          : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
-                      "
-                      class="mx-3"
-                      @click="mStatus('Married')"
-                    >
-                      <input
-                        type="radio"
-                        value="option2"
-                        class="bg-blue-500 text-white"
-                      />
-                      Married
-                    </div>
-                  </VRow>
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                  class="my-3"
+                    <input
+                      type="radio"
+                      :name="`gender-${selectedGender}`"
+                      value="option2"
+                      class="bg-blue-500 text-white"
+                    />
+                    Female
+                  </div>
+                  <div
+                    :style="genderErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
+                    :class="
+                      selectedGender == 'option3'
+                        ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                        : genderErrors == true
+                        ? '  border border-red-500  w-30 p-5 py-2 rounded-md text-red-500 '
+                        : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
+                    "
+                    class="mx-3 my-2"
+                    @click="gender('option3')"
+                  >
+                    <input
+                      type="radio"
+                      :name="`gender-${selectedGender}`"
+                      value="option3"
+                      class="bg-blue-500 text-white"
+                    />
+                    Trans
+                  </div>
+                </VRow>
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VRow
+                  ><label
+                    for="gender"
+                    class="px-3 py-2"
+                    :class="mstatusErrors == true ? 'text-red-500' : ''"
+                    >Marital Status *</label
+                  ></VRow
                 >
-                  <VTextField
-                    v-model="formData.pan"
-                    placeholder="ABdc123"
-                    label="PAN Number *"
-                    :error-messages="panErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
+                <VRow>
+                  <div
+                    :style="mstatusErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
+                    :class="
+                      selectedmStatus == 'Single'
+                        ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                        : mstatusErrors == true
+                        ? '  border border-red-800 w-30 p-5 py-2 rounded-md text-red-500 '
+                        : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
+                    "
+                    class="mx-3 my-2"
+                    @click="mStatus('Single')"
+                  >
+                    <input
+                      type="radio"
+                      value="option1"
+                      class="bg-blue-500 text-white"
+                    />
+                    Single
+                  </div>
+                  <div
+                    :style="mstatusErrors == true ? 'border: 1px solid #f73131 !important;' : ''"
+                    :class="
+                      selectedmStatus == 'Married'
+                        ? 'bg-blue-900 text-white w-30 p-5 py-2 rounded-md font-bold'
+                        : mstatusErrors == true
+                        ? '  border border-red-800 w-30 p-5 py-2 rounded-md text-red-500 '
+                        : ' text-black border border-gray-800 w-30 p-5 py-2 rounded-md text-gray-500 '
+                    "
+                    class="mx-3 my-2"
+                    @click="mStatus('Married')"
+                  >
+                    <input
+                      type="radio"
+                      value="option2"
+                      class="bg-blue-500 text-white"
+                    />
+                    Married
+                  </div>
+                </VRow>
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+                class="my-3"
+              >
+                <VTextField
+                  v-model="formData.pan"
+                  placeholder="ABdc123"
+                  label="PAN Number *"
+                  :error-messages="panErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
 
-                <VCol
-                  cols="12"
-                  md="6"
-                  class="my-3"
+              <VCol
+                cols="12"
+                md="4"
+                class="my-3"
+              >
+                <VTextField
+                  v-model="formData.dob"
+                  placeholder="DD-MM-YYYY"
+                  label="Date of Birth *"
+                  type="date"
+                  :error-messages="dobErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+                class="mt-2.5"
+              >
+                <VTextField
+                  v-model="formData.adhar"
+                  type="number"
+                  placeholder="2345"
+                  label="Aadhaar Number (Last 4 Digits Only)  *"
+                  :error-messages="adharErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VSelect
+                  v-model="formData.branchCode"
+                  label="Branch Code  *"
+                  placeholder="Select Branchcode "
+                  :items="['GZ10219', 'GZ10215', 'GZ10212', 'GZ10214', 'GZ10216']"
+                  :error-messages="branchErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VSelect
+                  v-model="formData.education"
+                  label="Education  * "
+                  placeholder="Select Education "
+                  :items="['BE', 'BSC', 'MSC', 'M.PHIL', 'PHD']"
+                  :error-messages="educationErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <div
+                  :class="selectedErrors == true ? 'text-red-500' : ''"
+                  class="pb-3"
                 >
-                  <VTextField
-                    v-model="formData.dob"
-                    placeholder="DD-MM-YYYY"
-                    label="Date of Birth *"
-                    type="date"
-                    :error-messages="dobErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.adhar"
-                    type="number"
-                    placeholder="2345"
-                    label="Aadhaar Number (Last 4 Digits Only)  *"
-                    :error-messages="adharErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VRow>
-                    <VCol
-                      cols="12"
-                      md="6"
-                    >
-                      <VSelect
-                        v-model="formData.branchCode"
-                        label="Branch Code  *"
-                        placeholder="Select Branchcode "
-                        :items="['GZ10219', 'GZ10215', 'GZ10212', 'GZ10214', 'GZ10216']"
-                        :error-messages="branchErrors"
-                        :rules="[requiredValidator]"
-                      />
-                    </VCol>
-                    <VCol
-                      cols="12"
-                      md="6"
-                    >
-                      <VSelect
-                        v-model="formData.education"
-                        label="Education  * "
-                        placeholder="Select Education "
-                        :items="['BE', 'BSC', 'MSC', 'M.PHIL', 'PHD']"
-                        :error-messages="educationErrors"
-                        :rules="[requiredValidator]"
-                      />
-                    </VCol>
-                  </VRow>
-                </VCol>
-                <VCol>
-                  <div :class="selectedErrors == true ? 'text-red-500' : ''">Choose the Exchange *</div>
+                  Choose the Exchange *
+                </div>
+                <div class="flex">
                   <div
                     class="demo-space-x"
-                    style="padding-top: 4px; padding-left: 2px"
+                    style="padding-top: 1px"
                   >
                     <VCheckbox
                       v-model="selected"
@@ -1076,13 +1265,13 @@ label input[type='radio']:checked + span {
                       value="NSE [CASH, FNO, COMMODITY, CURRENCY]"
                     >
                       <template v-slot:label>
-                        <span style="font-size: 14px; color: gray">NSE [CASH, FNO, COMMODITY, CURRENCY]</span>
+                        <span style="color: gray">NSE</span>
                       </template>
                     </VCheckbox>
                   </div>
                   <div
                     class="demo-space-x"
-                    style="padding-top: 4px; padding-left: 2px"
+                    style="padding-top: 1px; padding-left: 2px"
                   >
                     <VCheckbox
                       v-model="selected"
@@ -1090,13 +1279,13 @@ label input[type='radio']:checked + span {
                       value="BSE [CASH, FNO, COMMODITY, CURRENCY]"
                     >
                       <template v-slot:label>
-                        <span style="font-size: 14px; color: gray">BSE [CASH, FNO, COMMODITY, CURRENCY]</span>
+                        <span style="color: gray">BSE </span>
                       </template>
                     </VCheckbox>
                   </div>
                   <div
                     class="demo-space-x"
-                    style="padding-top: 4px; padding-left: 2px"
+                    style="padding-top: 1px; padding-left: 2px"
                   >
                     <VCheckbox
                       v-model="selected"
@@ -1104,674 +1293,718 @@ label input[type='radio']:checked + span {
                       value="MCX [FNO]"
                     >
                       <template v-slot:label>
-                        <span style="font-size: 14px; color: gray">MCX [FNO]</span>
+                        <span style="color: gray">MCX </span>
                       </template>
                     </VCheckbox>
                   </div>
-                </VCol>
-              </VRow>
-            </VWindowItem>
+                </div>
+              </VCol>
+            </VRow>
+          </VWindowItem>
 
-            <VWindowItem>
-              <VRow>
-                <VCol cols="12">
-                  <h6 class="text-sm font-weight-medium">Address Details</h6>
-                  <p class="text-xs mb-0">Setup Information</p>
-                </VCol>
+          <VWindowItem>
+            <VRow>
+              <!-- <VCol cols="12">
+                <h6 class="text-sm font-weight-medium">Address Details</h6>
+                <p class="text-xs mb-0 mt-0">Setup Information</p>
+              </VCol> -->
 
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextarea
-                    label="Address *"
-                    placeholder="Address *"
-                    v-model="formData.address"
-                    :error-messages="addressErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextarea
+                  label="Address *"
+                  placeholder="Address *"
+                  v-model="formData.address"
+                  :error-messages="addressErrors"
+                  :rules="[requiredValidator]"
+                  rows="2"
+                />
+              </VCol>
 
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    label="Pin Code *"
-                    placeholder="613601"
-                    v-model="formData.pincode"
-                    type="number"
-                    :error-messages="pincodeErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  label="Pin Code *"
+                  placeholder="613601"
+                  v-model="formData.pincode"
+                  type="number"
+                  :error-messages="pincodeErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
 
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    label="City / Town  *"
-                    placeholder="Chennai"
-                    v-model="formData.city"
-                    :error-messages="cityErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    label="District *"
-                    placeholder="Thanjavur"
-                    v-model="formData.district"
-                    :error-messages="addressErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  label="City / Town  *"
+                  placeholder="Chennai"
+                  v-model="formData.city"
+                  :error-messages="cityErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  label="District *"
+                  placeholder="Thanjavur"
+                  v-model="formData.district"
+                  :error-messages="addressErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
 
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VSelect
-                    v-model="formData.state"
-                    label="State / U.T Code *"
-                    placeholder="Select State *"
-                    :error-messages="stateErrors"
-                    :rules="[requiredValidator]"
-                    :items="[
-                      'Andhra Pradesh',
-                      'Arunachal Pradesh',
-                      'Assam',
-                      'Bihar',
-                      'Chhattisgarh',
-                      'Goa',
-                      'Gujarat',
-                      'Haryana',
-                      'Himachal Pradesh',
-                      'Jharkhand',
-                      'Karnataka',
-                      'Kerala',
-                      'Madhya Pradesh',
-                      'Maharashtra',
-                      'Manipur',
-                      'Meghalaya',
-                      'Mizoram',
-                      'Nagaland',
-                      'Odisha',
-                      'Punjab',
-                      'Rajasthan',
-                      'Sikkim',
-                      'Tamil Nadu',
-                      'Telangana',
-                      'Tripura',
-                      'Uttar Pradesh',
-                      'Uttarakhand',
-                      'West Bengal',
-                      'Andaman and Nicobar Islands',
-                      'Chandigarh',
-                      'Dadra and Nagar Haveli and Daman and Diu',
-                      'Lakshadweep',
-                      'Delhi',
-                      'Puducherry',
-                    ]"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VSelect
-                    v-model="formData.country"
-                    label="Country / ISO Code *"
-                    placeholder="Select Country *"
-                    :error-messages="countryErrors"
-                    :rules="[requiredValidator]"
-                    :items="['US', 'UK', 'INDIA', 'RUSSIA', 'UKRAIN']"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="12"
-                >
-                  <div
-                    class="demo-space-x"
-                    style="padding-top: 4px; padding-left: 2px"
-                  >
-                    <VCheckbox
-                      v-model="formData.apAddress"
-                      @click="apAddressClick(formData.apAddress)"
-                    >
-                      <template v-slot:label>
-                        <span style="font-size: 15px; color: gray">AP Address Same As Permanent Address</span>
-                      </template>
-                    </VCheckbox>
-                  </div>
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextarea
-                    label="Address *"
-                    placeholder="Address *"
-                    v-if="formData.apAddress"
-                    v-model="formData.address1"
-                    :error-messages="address1Errors"
-                    :rules="[requiredValidator]"
-                  />
-                  <VTextarea
-                    label="Address "
-                    placeholder="Address "
-                    v-if="!formData.apAddress"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    label="Pin Code *"
-                    placeholder="613601 "
-                    type="number"
-                    v-if="formData.apAddress"
-                    v-model="formData.pincode1"
-                    :error-messages="pincode1Errors"
-                    :rules="[requiredValidator]"
-                  />
-                  <VTextField
-                    label="Pin Code "
-                    type="number"
-                    placeholder="613601"
-                    v-if="!formData.apAddress"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    label="City / Town * "
-                    placeholder="Chennai "
-                    v-if="formData.apAddress"
-                    v-model="formData.city1"
-                    :error-messages="city1Errors"
-                    :rules="[requiredValidator]"
-                  />
-                  <VTextField
-                    label="City / Town  "
-                    placeholder="Chennai"
-                    v-if="!formData.apAddress"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    label="District *"
-                    placeholder="Thanjavur"
-                    v-if="formData.apAddress"
-                    v-model="formData.district1"
-                    :error-messages="district1Errors"
-                    :rules="[requiredValidator]"
-                  />
-                  <VTextField
-                    label="District "
-                    placeholder="Thanjavur"
-                    v-if="!formData.apAddress"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VSelect
-                    label="State / U.T Code * "
-                    placeholder="Select State"
-                    :items="['English', 'Spanish', 'French', 'Russian', 'German']"
-                    v-if="formData.apAddress"
-                    v-model="formData.state1"
-                    :error-messages="state1Errors"
-                    :rules="[requiredValidator]"
-                  />
-                  <VSelect
-                    label="State / U.T Code "
-                    placeholder="Select State"
-                    :items="['English', 'Spanish', 'French', 'Russian', 'German']"
-                    v-if="!formData.apAddress"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VSelect
-                    label="Country / ISO Code *"
-                    placeholder="Select Country"
-                    :items="['English', 'Spanish', 'French', 'Russian', 'German']"
-                    v-if="formData.apAddress"
-                    v-model="formData.country1"
-                    :error-messages="country1Errors"
-                    :rules="[requiredValidator]"
-                  />
-                  <VSelect
-                    v-model="formData.country1"
-                    label="Country / ISO Code *"
-                    placeholder="Select Country"
-                    :items="['English', 'Spanish', 'French', 'Russian', 'German']"
-                    v-if="!formData.apAddress"
-                  />
-                </VCol>
-              </VRow>
-            </VWindowItem>
-
-            <VWindowItem>
-              <VRow>
-                <VCol cols="12">
-                  <h6 class="text-sm font-weight-medium">Bank Details</h6>
-                  <p class="text-xs mb-0">Add Bank Details</p>
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VSelect
-                    v-model="formData.accountType"
-                    label="Account Type * "
-                    placeholder="Select AccountType "
-                    :items="['Savings Account', 'Salary Account', 'Fixed Account']"
-                    :error-messages="accountTypeErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.ifsc"
-                    placeholder="IFSC Code *"
-                    label="IFSC Code *"
-                    :error-messages="ifscErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.accountNumber"
-                    placeholder="Account Number *"
-                    label="Account Number * "
-                    type="number"
-                    :error-messages="accountNumberErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.bankName"
-                    placeholder="Bank Name *"
-                    label="Bank Name *"
-                    :error-messages="bankNameErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.micr"
-                    placeholder="MICR Code *"
-                    label="MICR Code *"
-                    :error-messages="micrErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextarea
-                    label="Bank Address *"
-                    v-model="formData.bankAddress"
-                    placeholder="Address *"
-                    :error-messages="bankAddressErrors"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-              </VRow>
-            </VWindowItem>
-            <VWindowItem>
-              <VRow>
-                <VCol cols="12">
-                  <h6 class="text-sm font-weight-medium">Attachments & Declaration</h6>
-                  <p class="text-xs mb-0">Provide more details</p>
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VCard>
-                    <div
-                      v-if="!avatar1"
-                      class="p-5 py-10"
-                    >
-                      <VFileInput
-                        v-model="avatar1"
-                        :rules="rules"
-                        label="PAN"
-                        placeholder="Pick a Proof"
-                        prepend-icon="ri-attachment-line"
-                        @update:model-value="handleAvatarUpdate1"
-                        show-details
-                      />
-                    </div>
-                    <div
-                      v-if="avatar1"
-                      class="relative"
-                    >
-                      <div class="flex justify-center">
-                        <object
-                          :data="imageUrl1"
-                          type="application/pdf"
-                          width="100%"
-                          height="400"
-                        />
-                      </div>
-                      <div class="absolute top-0 right-0 left-0 bg-white">
-                        <div class="flex justify-between">
-                          <div class="font-bold px-5 py-5">PAN</div>
-                          <div
-                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
-                            @click="handleAvatarUpdate1(null)"
-                          >
-                            Remove
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </VCard>
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VCard>
-                    <div
-                      v-if="!avatar2"
-                      class="p-5 py-10"
-                    >
-                      <VFileInput
-                        v-model="avatar2"
-                        :rules="rules"
-                        label="EDUCATION PROOF"
-                        placeholder="Pick a Proof"
-                        prepend-icon="ri-attachment-line"
-                        @update:model-value="handleAvatarUpdate2"
-                      />
-                    </div>
-                    <div
-                      v-if="avatar2"
-                      class="relative"
-                    >
-                      <div class="flex justify-center">
-                        <object
-                          :data="imageUrl2"
-                          type="application/pdf"
-                          width="100%"
-                          height="400"
-                        />
-                      </div>
-                      <div class="absolute top-0 right-0 left-0 bg-white">
-                        <div class="flex justify-between">
-                          <div class="font-bold px-5 py-5">EDUCATION PROOF</div>
-                          <div
-                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
-                            @click="handleAvatarUpdate2(null)"
-                          >
-                            Remove
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </VCard>
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VCard>
-                    <div
-                      v-if="!avatar"
-                      class="p-5 py-10"
-                    >
-                      <VFileInput
-                        v-model="avatar"
-                        :rules="rules"
-                        label="PHOTO"
-                        accept="image/png, image/jpeg, image/bmp"
-                        placeholder="Pick an avatar"
-                        prepend-icon="ri-camera-2-line"
-                        @update:model-value="handleAvatarUpdate"
-                      />
-                    </div>
-                    <div
-                      v-if="avatar"
-                      class="relative"
-                    >
-                      <div class="flex justify-center items-center">
-                        <object
-                          :data="imageUrl"
-                          width="100%"
-                          height="400"
-                        />
-                      </div>
-
-                      <div class="absolute top-0 right-0 left-0 bg-white">
-                        <div class="flex justify-between">
-                          <div class="font-bold px-5 py-5">PHOTO</div>
-                          <div
-                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
-                            @click="handleAvatarUpdate(null)"
-                          >
-                            Remove
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </VCard>
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VCard>
-                    <div
-                      v-if="!avatar3"
-                      class="p-5 py-10"
-                    >
-                      <VFileInput
-                        v-model="avatar3"
-                        :rules="rules"
-                        label="ADDRESS PROOF"
-                        placeholder="Pick an Proof"
-                        prepend-icon="ri-attachment-line"
-                        @update:model-value="handleAvatarUpdate3"
-                      />
-                    </div>
-                    <div
-                      v-if="avatar3"
-                      class="relative"
-                    >
-                      <div class="flex justify-center">
-                        <object
-                          :data="imageUrl3"
-                          type="application/pdf"
-                          width="100%"
-                          height="400"
-                        />
-                      </div>
-                      <div class="absolute top-0 right-0 left-0 bg-white">
-                        <div class="flex justify-between">
-                          <div class="font-bold px-5 py-5">ADDRESS PROOF</div>
-                          <div
-                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
-                            @click="handleAvatarUpdate3(null)"
-                          >
-                            Remove
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </VCard>
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VCard>
-                    <div
-                      v-if="!avatar4"
-                      class="p-5 py-10"
-                    >
-                      <VFileInput
-                        v-model="avatar4"
-                        :rules="rules"
-                        label="AP ADDRESS PROOF"
-                        placeholder="Pick an Proof"
-                        prepend-icon="ri-attachment-line"
-                        @update:model-value="handleAvatarUpdate4"
-                      />
-                    </div>
-                    <div
-                      v-if="avatar4"
-                      class="relative"
-                    >
-                      <div class="flex justify-center">
-                        <object
-                          :data="imageUrl4"
-                          type="application/pdf"
-                          width="100%"
-                          height="400"
-                        />
-                      </div>
-                      <div class="absolute top-0 right-0 left-0 bg-white">
-                        <div class="flex justify-between">
-                          <div class="font-bold px-5 py-5">AP ADDRESS PROOF</div>
-                          <div
-                            class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
-                            @click="handleAvatarUpdate4(null)"
-                          >
-                            Remove
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </VCard>
-                </VCol>
-              </VRow>
-              <VCol><div class="text-blue-600 py-2">DECLARATION</div></VCol>
-
-              <VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VSelect
+                  v-model="formData.state"
+                  label="State / U.T Code *"
+                  placeholder="Select State *"
+                  :error-messages="stateErrors"
+                  :rules="[requiredValidator]"
+                  :items="[
+                    'Andhra Pradesh',
+                    'Arunachal Pradesh',
+                    'Assam',
+                    'Bihar',
+                    'Chhattisgarh',
+                    'Goa',
+                    'Gujarat',
+                    'Haryana',
+                    'Himachal Pradesh',
+                    'Jharkhand',
+                    'Karnataka',
+                    'Kerala',
+                    'Madhya Pradesh',
+                    'Maharashtra',
+                    'Manipur',
+                    'Meghalaya',
+                    'Mizoram',
+                    'Nagaland',
+                    'Odisha',
+                    'Punjab',
+                    'Rajasthan',
+                    'Sikkim',
+                    'Tamil Nadu',
+                    'Telangana',
+                    'Tripura',
+                    'Uttar Pradesh',
+                    'Uttarakhand',
+                    'West Bengal',
+                    'Andaman and Nicobar Islands',
+                    'Chandigarh',
+                    'Dadra and Nagar Haveli and Daman and Diu',
+                    'Lakshadweep',
+                    'Delhi',
+                    'Puducherry',
+                  ]"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VSelect
+                  v-model="formData.country"
+                  label="Country / ISO Code *"
+                  placeholder="Select Country *"
+                  :error-messages="countryErrors"
+                  :rules="[requiredValidator]"
+                  :items="['US', 'UK', 'INDIA', 'RUSSIA', 'UKRAIN']"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="12"
+              >
                 <div
                   class="demo-space-x"
-                  style="padding-left: 2px"
+                  style="padding-top: 0px; padding-left: 2px"
                 >
                   <VCheckbox
-                    v-model="declaration"
-                    @click="changedeclaration"
+                    v-model="formData.apAddress"
+                    @click="apAddressClick(formData.apAddress)"
                   >
                     <template v-slot:label>
-                      <span style="font-size: 14px; color: gray"
-                        >I hereby declare that the details furnished above are true and correct to the best of my
-                        knowledge and belief and i undertake to inform you of any changes therein, immediately. In case
-                        any of the above information is found to be false or untrue or misleading or misrepresenting. I
-                        am aware that i may be held liable for it. I hereby consent to receiving information from
-                        Central KYC Registry through SMS/Email on the above registered number / Email address.</span
-                      >
+                      <span style="font-size: 14px; color: gray">AP Address Same As Permanent Address</span>
                     </template>
                   </VCheckbox>
                 </div>
               </VCol>
-              <VRow>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.branchCode"
-                    placeholder="GPMZ0001"
-                    label="Your Code *"
-                    :error-messages="nameErrors"
-                    :rules="[requiredValidator]"
-                    readonly
-                  />
-                </VCol>
 
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.name"
-                    placeholder="TESTQ"
-                    label="Client Name *"
-                    :error-messages="nameErrors"
-                    :rules="[requiredValidator]"
-                    readonly
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.district"
-                    placeholder="CHENNAI"
-                    label="Place *"
-                    :error-messages="nameErrors"
-                    :rules="[requiredValidator]"
-                    readonly
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VTextField
-                    v-model="formData.dob"
-                    placeholder="04-10-2024"
-                    label="Date *"
-                    :error-messages="nameErrors"
-                    :rules="[requiredValidator]"
-                    readonly
-                  />
-                </VCol>
-              </VRow>
-            </VWindowItem>
-          </VWindow>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextarea
+                  label="Address *"
+                  placeholder="Address *"
+                  v-if="formData.apAddress"
+                  v-model="formData.address1"
+                  :error-messages="address1Errors"
+                  :rules="[requiredValidator]"
+                  rows="2"
+                />
+                <VTextarea
+                  label="Address "
+                  placeholder="Address "
+                  rows="2"
+                  v-if="!formData.apAddress"
+                />
+              </VCol>
 
-          <div class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8">
-            <VBtn
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  label="Pin Code *"
+                  placeholder="613601 "
+                  type="number"
+                  v-if="formData.apAddress"
+                  v-model="formData.pincode1"
+                  :error-messages="pincode1Errors"
+                  :rules="[requiredValidator]"
+                />
+                <VTextField
+                  label="Pin Code "
+                  type="number"
+                  placeholder="613601"
+                  v-if="!formData.apAddress"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  label="City / Town * "
+                  placeholder="Chennai "
+                  v-if="formData.apAddress"
+                  v-model="formData.city1"
+                  :error-messages="city1Errors"
+                  :rules="[requiredValidator]"
+                />
+                <VTextField
+                  label="City / Town  "
+                  placeholder="Chennai"
+                  v-if="!formData.apAddress"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  label="District *"
+                  placeholder="Thanjavur"
+                  v-if="formData.apAddress"
+                  v-model="formData.district1"
+                  :error-messages="district1Errors"
+                  :rules="[requiredValidator]"
+                />
+                <VTextField
+                  label="District "
+                  placeholder="Thanjavur"
+                  v-if="!formData.apAddress"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VSelect
+                  label="State / U.T Code * "
+                  placeholder="Select State"
+                  :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                  v-if="formData.apAddress"
+                  v-model="formData.state1"
+                  :error-messages="state1Errors"
+                  :rules="[requiredValidator]"
+                />
+                <VSelect
+                  label="State / U.T Code "
+                  placeholder="Select State"
+                  :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                  v-if="!formData.apAddress"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VSelect
+                  label="Country / ISO Code *"
+                  placeholder="Select Country"
+                  :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                  v-if="formData.apAddress"
+                  v-model="formData.country1"
+                  :error-messages="country1Errors"
+                  :rules="[requiredValidator]"
+                />
+                <VSelect
+                  v-model="formData.country1"
+                  label="Country / ISO Code *"
+                  placeholder="Select Country"
+                  :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                  v-if="!formData.apAddress"
+                />
+              </VCol>
+            </VRow>
+          </VWindowItem>
+
+          <VWindowItem>
+            <VRow>
+              <!-- <VCol cols="12">
+                <h6 class="text-sm font-weight-medium">Bank Details</h6>
+                <p class="text-xs mb-0">Add Bank Details</p>
+              </VCol> -->
+
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VSelect
+                  v-model="formData.accountType"
+                  label="Account Type * "
+                  placeholder="Select AccountType "
+                  :items="['Savings Account', 'Salary Account', 'Fixed Account']"
+                  :error-messages="accountTypeErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VTextField
+                  v-model="formData.ifsc"
+                  placeholder="IFSC Code *"
+                  label="IFSC Code *"
+                  :error-messages="ifscErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VTextField
+                  v-model="formData.accountNumber"
+                  placeholder="Account Number *"
+                  label="Account Number * "
+                  type="number"
+                  :error-messages="accountNumberErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VTextField
+                  v-model="formData.bankName"
+                  placeholder="Bank Name *"
+                  label="Bank Name *"
+                  :error-messages="bankNameErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VTextField
+                  v-model="formData.micr"
+                  placeholder="MICR Code *"
+                  label="MICR Code *"
+                  :error-messages="micrErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VTextarea
+                  label="Bank Address *"
+                  v-model="formData.bankAddress"
+                  placeholder="Address *"
+                  :error-messages="bankAddressErrors"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+            </VRow>
+          </VWindowItem>
+          <VWindowItem>
+            <VRow>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VCard>
+                  <div
+                    v-if="!avatar1"
+                    class="p-5 py-2"
+                  >
+                    <VFileInput
+                      v-model="avatar1"
+                      :rules="rules"
+                      label="PAN"
+                      placeholder="Pick a Proof"
+                      prepend-icon="ri-attachment-line"
+                      @update:model-value="handleAvatarUpdate1"
+                      show-details
+                    />
+                  </div>
+                  <div
+                    v-if="avatar1"
+                    class=""
+                  >
+                    <div class="flex py-4 justify-between px-2">
+                      <div class="">{{ panpdfname }}</div>
+                      <div class="flex">
+                        <div
+                          class="bg-blue-500 rounded-md items-center justify-center px-2 py-1 mx-2"
+                          @click="isPanDialogVisible = true"
+                        >
+                          <VIcon
+                            icon="ri-eye-fill"
+                            color="white"
+                            size="18"
+                          />
+                        </div>
+                        <div
+                          class="bg-red-500 rounded-md items-center justify-center px-2 py-1"
+                          @click="handleAvatarUpdate1(null)"
+                        >
+                          <VIcon
+                            icon="ri-delete-bin-4-fill"
+                            color="white"
+                            size="18"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div class="absolute top-0 right-0 left-0 bg-white">
+                      <div class="flex justify-between">
+                        <div class="font-bold px-5 py-5">PAN</div>
+                        <div
+                          class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                          @click="handleAvatarUpdate1(null)"
+                        >
+                          Remove
+                        </div>
+                      </div>
+                    </div> -->
+                  </div>
+                </VCard>
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VCard>
+                  <div
+                    v-if="!avatar2"
+                    class="p-5 py-2"
+                  >
+                    <VFileInput
+                      v-model="avatar2"
+                      :rules="rules"
+                      label="EDUCATION PROOF"
+                      placeholder="Pick a Proof"
+                      prepend-icon="ri-attachment-line"
+                      @update:model-value="handleAvatarUpdate2"
+                    />
+                  </div>
+                  <div
+                    v-if="avatar2"
+                    class="relative"
+                  >
+                    <div class="">
+                      <!-- <object
+                        :data="imageUrl1"
+                        type="application/pdf"
+                        width="100%"
+                        height="400"
+                      /> -->
+                      <div class="flex py-4 justify-between px-2">
+                        <div class="">{{ eppdfname }}</div>
+                        <div class="flex">
+                          <div
+                            class="bg-blue-500 rounded-md items-center justify-center px-2 py-1 mx-2"
+                            @click="isEpDialogVisible = true"
+                          >
+                            <VIcon
+                              icon="ri-eye-fill"
+                              color="white"
+                              size="18"
+                            />
+                          </div>
+                          <div
+                            class="bg-red-500 rounded-md items-center justify-center px-2 py-1"
+                            @click="handleAvatarUpdate2(null)"
+                          >
+                            <VIcon
+                              icon="ri-delete-bin-4-fill"
+                              color="white"
+                              size="18"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div class="absolute top-0 right-0 left-0 bg-white">
+                      <div class="flex justify-between">
+                        <div class="font-bold px-5 py-5">EDUCATION PROOF</div>
+                        <div
+                          class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                          @click="handleAvatarUpdate2(null)"
+                        >
+                          Remove
+                        </div>
+                      </div>
+                    </div> -->
+                  </div>
+                </VCard>
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VCard>
+                  <div
+                    v-if="!avatar"
+                    class="p-5 py-2"
+                  >
+                    <VFileInput
+                      v-model="avatar"
+                      :rules="rules"
+                      label="PHOTO"
+                      accept="image/png, image/jpeg, image/bmp"
+                      placeholder="Pick an avatar"
+                      prepend-icon="ri-camera-2-line"
+                      @update:model-value="handleAvatarUpdate"
+                    />
+                  </div>
+                  <div
+                    v-if="avatar"
+                    class=""
+                  >
+                    <div
+                      class="flex justify-center items-center"
+                      @click="isDialogVisible = true"
+                    >
+                      <img
+                        :src="imageUrl"
+                        width="50"
+                        height="50"
+                      />
+                    </div>
+
+                    <!-- <div class="absolute top-0 right-0 left-0 bg-white">
+                      <div class="flex justify-between">
+                        <div class="font-bold px-5 py-5">PHOTO</div>
+                        <div
+                          class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                          @click="handleAvatarUpdate(null)"
+                        >
+                          Remove
+                        </div>
+                      </div>
+                    </div> -->
+                  </div>
+                </VCard>
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VCard>
+                  <div
+                    v-if="!avatar3"
+                    class="p-5 py-2"
+                  >
+                    <VFileInput
+                      v-model="avatar3"
+                      :rules="rules"
+                      label="ADDRESS PROOF"
+                      placeholder="Pick an Proof"
+                      prepend-icon="ri-attachment-line"
+                      @update:model-value="handleAvatarUpdate3"
+                    />
+                  </div>
+                  <div
+                    v-if="avatar3"
+                    class="relative"
+                  >
+                    <div class="flex justify-center">
+                      <object
+                        :data="imageUrl3"
+                        type="application/pdf"
+                        width="100%"
+                        height="400"
+                      />
+                    </div>
+                    <div class="absolute top-0 right-0 left-0 bg-white">
+                      <div class="flex justify-between">
+                        <div class="font-bold px-5 py-5">ADDRESS PROOF</div>
+                        <div
+                          class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                          @click="handleAvatarUpdate3(null)"
+                        >
+                          Remove
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </VCard>
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VCard>
+                  <div
+                    v-if="!avatar4"
+                    class="p-5 py-2"
+                  >
+                    <VFileInput
+                      v-model="avatar4"
+                      :rules="rules"
+                      label="AP ADDRESS PROOF"
+                      placeholder="Pick an Proof"
+                      prepend-icon="ri-attachment-line"
+                      @update:model-value="handleAvatarUpdate4"
+                    />
+                  </div>
+                  <div
+                    v-if="avatar4"
+                    class="relative"
+                  >
+                    <div class="flex justify-center">
+                      <object
+                        :data="imageUrl4"
+                        type="application/pdf"
+                        width="100%"
+                        height="400"
+                      />
+                    </div>
+                    <div class="absolute top-0 right-0 left-0 bg-white">
+                      <div class="flex justify-between">
+                        <div class="font-bold px-5 py-5">AP ADDRESS PROOF</div>
+                        <div
+                          class="bg-red-500 border px-5 py-2 rounded-md text-white w-30 my-3 mx-5"
+                          @click="handleAvatarUpdate4(null)"
+                        >
+                          Remove
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </VCard>
+              </VCol>
+            </VRow>
+            <VCol cols="12"><div class="text-blue-600 py-2 pb-0">DECLARATION</div></VCol>
+
+            <VCol cols="12">
+              <div
+                class="demo-space-x"
+                style="padding-left: 2px; padding-top: 0px"
+              >
+                <VCheckbox
+                  v-model="declaration"
+                  @click="changedeclaration"
+                >
+                  <template v-slot:label>
+                    <span style="font-size: 14px; color: gray"
+                      >I hereby declare that the details furnished above are true and correct to the best of my
+                      knowledge and belief and i undertake to inform you of any changes therein, immediately. In case
+                      any of the above information is found to be false or untrue or misleading or misrepresenting. I am
+                      aware that i may be held liable for it. I hereby consent to receiving information from Central KYC
+                      Registry through SMS/Email on the above registered number / Email address.</span
+                    >
+                  </template>
+                </VCheckbox>
+              </div>
+            </VCol>
+            <VRow>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  v-model="formData.branchCode"
+                  placeholder="GPMZ0001"
+                  label="Your Code *"
+                  :error-messages="nameErrors"
+                  :rules="[requiredValidator]"
+                  readonly
+                />
+              </VCol>
+
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  v-model="formData.name"
+                  placeholder="TESTQ"
+                  label="Client Name *"
+                  :error-messages="nameErrors"
+                  :rules="[requiredValidator]"
+                  readonly
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  v-model="formData.district"
+                  placeholder="CHENNAI"
+                  label="Place *"
+                  :error-messages="nameErrors"
+                  :rules="[requiredValidator]"
+                  readonly
+                />
+              </VCol>
+              <!-- <VCol
+                cols="12"
+                md="4"
+              >
+                <VTextField
+                  v-model="formData.dob"
+                  placeholder="04-10-2024"
+                  label="Date *"
+                  :error-messages="nameErrors"
+                  :rules="[requiredValidator]"
+                  readonly
+                />
+              </VCol> -->
+            </VRow>
+          </VWindowItem>
+        </VWindow>
+
+        <div class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-4">
+          <!-- <VBtn
               color="secondary"
               variant="outlined"
               :disabled="currentStep === 0"
@@ -1783,18 +2016,41 @@ label input[type='radio']:checked + span {
                 class="flip-in-rtl"
               />
               Previous
-            </VBtn>
+            </VBtn> -->
+          <div
+            :class="{ 'is-disabled': currentStep === 0 }"
+            @click="currentStep > 0 && currentStep--"
+          >
+            <div class="button-effect">
+              <a
+                class="effect effect-5"
+                href="#"
+                title="Learn More"
+                >PREV</a
+              >
+            </div>
+          </div>
 
-            <VBtn
-              v-if="currentStep === numberedSteps.length - 1"
-              color="success"
-              append-icon="ri-check-line"
-              @click="onSubmit"
-            >
-              Submit
-            </VBtn>
+          <VBtn
+            v-if="currentStep === numberedSteps.length - 1"
+            color="success"
+            append-icon="ri-check-line"
+            @click="onSubmit"
+          >
+            Submit
+          </VBtn>
+          <!-- <div v-if="currentStep === numberedSteps.length - 1">
+              <button data-type="submit">
+                <VIcon
+                  icon="ri-user-add-fill"
+                  color="red"
+                  size="22"
+                />
+                submit
+              </button>
+            </div> -->
 
-            <VBtn
+          <!-- <VBtn
               v-else
               @click="validateForm"
             >
@@ -1804,10 +2060,76 @@ label input[type='radio']:checked + span {
                 end
                 class="flip-in-rtl"
               />
-            </VBtn>
+            </VBtn> -->
+          <div
+            v-else
+            @click="validateForm"
+          >
+            <div class="button-effect">
+              <a
+                class="effect effect-1"
+                href="#"
+                title="Learn More"
+                >NEXT</a
+              >
+            </div>
           </div>
-        </VForm>
-      </VCardText>
-    </VCard>
+        </div>
+      </VForm>
+    </VCardText>
   </VCard>
+  <VDialog
+    v-model="isDialogVisible"
+    width="500"
+  >
+    <VCard>
+      <VCardText
+        ><div class="flex justify-center items-center mx-auto my-auto">
+          <div>
+            <object
+              :data="imageUrl"
+              type="application/pdf"
+              width="100%"
+              height="400"
+            />
+          </div></div
+      ></VCardText>
+    </VCard>
+  </VDialog>
+  <VDialog
+    v-model="isPanDialogVisible"
+    width="500"
+  >
+    <VCard>
+      <VCardText
+        ><div class="">
+          <div>
+            <object
+              :data="imageUrl1"
+              type="application/pdf"
+              width="100%"
+              height="600"
+            />
+          </div></div
+      ></VCardText>
+    </VCard>
+  </VDialog>
+  <VDialog
+    v-model="isEpDialogVisible"
+    width="500"
+  >
+    <VCard>
+      <VCardText
+        ><div class="">
+          <div>
+            <object
+              :data="imageUrl2"
+              type="application/pdf"
+              width="100%"
+              height="600"
+            />
+          </div></div
+      ></VCardText>
+    </VCard>
+  </VDialog>
 </template>

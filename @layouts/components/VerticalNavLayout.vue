@@ -1,13 +1,16 @@
 <script lang="ts">
 import { useDisplay } from 'vuetify'
 import VerticalNav from '@layouts/components/VerticalNav.vue'
-
+import { useTheme } from 'vuetify'
 export default defineComponent({
   setup(props, { slots }) {
     const isOverlayNavActive = ref(false)
     const isLayoutOverlayVisible = ref(false)
     const toggleIsOverlayNavActive = useToggle(isOverlayNavActive)
-
+    const vuetifyTheme = useTheme()
+    const isDarkTheme = computed(() => {
+      return vuetifyTheme.global.name.value === 'dark'
+    })
     const route = useRoute()
     const { mdAndDown } = useDisplay()
 
@@ -41,8 +44,8 @@ export default defineComponent({
 
       const main = h(
         'main',
-        { class: 'layout-page-content bg-white' },
-        h('div', { class: 'page-content-container' }, slots.default?.()),
+        { class: isDarkTheme.value == true ? 'layout-page-content bg-[#312D4B] ' : 'layout-page-content bg-white' },
+        slots.default?.(),
       )
 
       // 👉 Footer
@@ -61,13 +64,9 @@ export default defineComponent({
       return h(
         'div',
         {
-          class: [
-            'layout-wrapper layout-nav-type-vertical layout-navbar-static layout-footer-static layout-content-width-fluid',
-            mdAndDown.value && 'layout-overlay-nav',
-            route.meta.layoutWrapperClasses,
-          ],
+          class: ['layout-wrapper', mdAndDown.value && 'layout-overlay-nav', route.meta.layoutWrapperClasses],
         },
-        [verticalNav, h('div', { class: 'layout-content-wrapper' }, [navbar, main, footer]), layoutOverlay],
+        [navbar, main, footer, layoutOverlay],
       )
     }
   },
@@ -79,20 +78,22 @@ export default defineComponent({
 @use '@layouts/styles/placeholders';
 @use '@layouts/styles/mixins';
 
-.layout-wrapper.layout-nav-type-vertical {
+.layout-wrapper {
   // TODO(v2): Check why we need height in vertical nav & min-height in horizontal nav
   block-size: 100%;
-
-  .layout-content-wrapper {
+  overflow: hidden;
+  height: 100vh;
+  .layout-page-content {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+
     min-block-size: 100dvh;
     transition: padding-inline-start 0.2s ease-in-out;
     will-change: padding-inline-start;
 
     @media screen and (min-width: 1280px) {
-      padding-inline-start: variables.$layout-vertical-nav-width;
+      padding-inline-start: 0;
     }
   }
 
@@ -104,7 +105,7 @@ export default defineComponent({
     }
 
     @at-root {
-      .layout-wrapper.layout-nav-type-vertical {
+      .layout-wrapper {
         .layout-navbar {
           @if variables.$layout-vertical-nav-navbar-is-contained {
             @include mixins.boxed-content;
@@ -149,28 +150,15 @@ export default defineComponent({
     }
   }
 
-  // Adjust right column pl when vertical nav is collapsed
-  &.layout-vertical-nav-collapsed .layout-content-wrapper {
-    padding-inline-start: variables.$layout-vertical-nav-collapsed-width;
-  }
-
   // 👉 Content height fixed
   &.layout-content-height-fixed {
-    .layout-content-wrapper {
-      max-block-size: 100dvh;
-    }
-
     .layout-page-content {
       display: flex;
       overflow: hidden;
 
-      .page-content-container {
-        inline-size: 100%;
-
-        > :first-child {
-          max-block-size: 100%;
-          overflow-y: auto;
-        }
+      > :first-child {
+        max-block-size: 100%;
+        overflow-y: auto;
       }
     }
   }
