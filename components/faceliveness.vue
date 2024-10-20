@@ -103,6 +103,7 @@ import { FaceMesh } from '@mediapipe/face_mesh'
 import { Camera } from '@mediapipe/camera_utils'
 
 export default {
+  name: 'faceliveness',
   mounted() {
     this.initialize()
   },
