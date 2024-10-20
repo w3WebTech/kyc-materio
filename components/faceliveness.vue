@@ -109,7 +109,15 @@ export default {
   },
   methods: {
     initialize() {
-      const videoElement = document.getElementById('video') as HTMLVideoElement
+      const videoElement = document.getElementById('video')
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(stream => {
+          videoElement.srcObject = stream
+        })
+        .catch(err => {
+          console.error('Error accessing the webcam: ', err)
+        })
       const canvasElement = document.getElementById('canvas') as HTMLCanvasElement
 
       // const videoElement = document.getElementById('video') as HTMLVideoElement;
