@@ -204,12 +204,11 @@ export default {
             const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
             const isFaceSizeCorrect = checkFaceSize(landmarks)
 
-            if (isFaceSizeCorrect) {
+            if (isFaceSizeCorrect && areLinesPerpendicular) {
               message.style.display = 'block'
-              if (blinkCount >= 2) {
-                // Blink 3 times (1s per blink)
+              if (blinkCount >= 1) {
                 message.style.display = 'none'
-                captureImage()
+                captureImage() // Make sure this is called
                 imageCaptured = true
               } else {
                 blinkCount++
@@ -392,20 +391,18 @@ export default {
         const snapshotCanvas = document.createElement('canvas')
         snapshotCanvas.width = canvasElement.width
         snapshotCanvas.height = canvasElement.height
-        const snapshotCtx = snapshotCanvas.getContext('2d') as CanvasRenderingContext2D
+        const snapshotCtx = snapshotCanvas.getContext('2d')
+
+        // Draw the current video frame onto the snapshot canvas
         snapshotCtx.drawImage(videoElement, 0, 0, snapshotCanvas.width, snapshotCanvas.height)
 
-        // Apply image filters (example: sharpen)
-        const imageData = snapshotCtx.getImageData(0, 0, snapshotCanvas.width, snapshotCanvas.height)
-        // You would need to implement or find a sharpening filter here
-        // applySharpenFilter(imageData);
-
-        snapshotCtx.putImageData(imageData, 0, 0) // Put back the processed image
-
+        // Convert the canvas to a data URL and set it as the source of the snapshot image
         const dataUrl = snapshotCanvas.toDataURL('image/png', 1.0) // Full quality
         snapshot.src = dataUrl
-        snapshot.style.display = 'block'
-        document.getElementById('video-container')!.style.display = 'none' // Ensure to use non-null assertion
+        snapshot.style.display = 'block' // Make the snapshot visible
+
+        // Hide the video container if needed
+        document.getElementById('video-container').style.display = 'none'
       }
     },
   },
