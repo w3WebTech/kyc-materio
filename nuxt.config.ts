@@ -17,7 +17,6 @@ export default defineNuxtConfig({
     },
     enabled: true,
   },
-  
 
   devtools: {
     enabled: true,
@@ -132,11 +131,12 @@ export default defineNuxtConfig({
 
   modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt', '@nuxtjs/tailwindcss'],
   pinia:{autoImports:["defineStore"]},
+
   buildModules: [
     '@nuxt/typescript-build',
     '@nuxtjs/tailwindcss', // Add other modules as needed
     'pinia/nuxt', // Register Pinia as a build module
   ],
 
-
+  compatibilityDate: '2024-10-16',
 })

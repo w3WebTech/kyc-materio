@@ -1,6 +1,6 @@
 <template>
   <div :class="isDarkTheme == true ? 'bg-[#312D4B]' : 'bg-white'">
-    <div class="container mx-auto">
+    <div class="mx-auto">
       <div class="slide-container relative">
         <div
           class="slide"
@@ -16,7 +16,6 @@
                 <VTextField
                   placeholder="John"
                   label="Name *"
-                  id="name"
                 />
               </VCol>
               <VCol
@@ -46,7 +45,6 @@
                 <VTextField
                   placeholder="9876543210"
                   label="Phone *"
-                  type="number"
                 />
               </VCol>
             </VRow>
@@ -373,6 +371,23 @@
           ullam. -->
           </div>
         </div>
+        <div
+          class="slide"
+          :class="{ active: activeSlide === 8, hidden: activeSlide !== 8 }"
+        >
+          <div class="slide-1 w-full flex justify-center space-x-4">
+            <VRow class="md:px-60">
+              <VCol cols="12">EIGHTH STEP</VCol>
+              <VCol
+                cols="12"
+                md="6"
+                class=""
+              >
+                <faceliveness />
+              </VCol>
+            </VRow>
+          </div>
+        </div>
       </div>
       <div class="slide-nav flex justify-between mb-6 mt-2 md:mx-40">
         <VBtn
@@ -385,7 +400,8 @@
         <VBtn
           @click="navigate(1)"
           class="bg-gray-200 p-2 rounded"
-          :disabled="steps[steps.length - 1] == activeSlide"
+          :disabled="steps[steps?.length - 1] == activeSlide"
+          id="start-button"
         >
           NEXT
         </VBtn>
@@ -502,15 +518,32 @@
             ></div>
           </div>
         </button>
+        <button @click="setSlide(8)">
+          <div v-if="activeSlide == 8">
+            <div
+              :class="isDarkTheme == true ? 'bg-[#CCC8E2]' : 'bg-[#CCC8E2]'"
+              class="h-3 w-6 rounded-md mx-1"
+            ></div>
+          </div>
+          <div v-else>
+            <div
+              :class="isDarkTheme == true ? 'bg-[#312D4B]' : 'bg-white'"
+              class="h-3 w-6 rounded-md mx-1"
+              :style="isDarkTheme == true ? 'border: 1px solid #CCC8E2' : 'border: 1px solid #CCC8E2'"
+            ></div>
+          </div>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
 import { useTheme } from 'vuetify'
 
+import { defineComponent, ref, onMounted } from 'vue'
+// import { FaceMesh } from '@mediapipe/face_mesh'
+import { Camera } from '@mediapipe/camera_utils'
 export default defineComponent({
   name: 'Slideshow',
   data() {
@@ -525,61 +558,53 @@ export default defineComponent({
       return vuetifyTheme.global.name.value === 'light' ? false : true
     })
 
+    // Function to create fireworks
+    function createFireworks(): void {
+      const body: HTMLBodyElement = document.body
+      for (let i = 0; i < 40; i++) {
+        const firework: HTMLDivElement = document.createElement('div')
+        firework.classList.add('firework')
+        const size: number = Math.random() * 50 + 10 // Random size between 10px and 60px
+        firework.style.width = `${size}px`
+        firework.style.height = `${size}px`
+        firework.style.position = 'absolute' // Set position to absolute to place correctly
+        firework.style.top = `${Math.random() * 100}vh` // Random vertical position
+        firework.style.left = `${Math.random() * 100}vw` // Random horizontal position
+        body.appendChild(firework)
+        firework.style.display = 'block' // Show the firework
+      }
+
+      // Remove fireworks after 2 seconds
+      setTimeout(() => {
+        const fireworks: NodeListOf<HTMLDivElement> = document.querySelectorAll('.firework')
+        fireworks.forEach(firework => firework.remove())
+      }, 2000)
+    }
+
     return {
       isDarkTheme,
+      createFireworks,
     }
   },
-  // setup() {
-  //   const activeSlide = ref(1)
-  //   const router = useRouter()
-  //   const steps = ref(router.currentRoute.query.steps.split(','))
-
-  //   const setSlide = (id: number) => {
-  //     activeSlide.value = id
-  //   }
-  //   const navigate = (direction: number) => {
-  //     const newValue = activeSlide.value + direction
-  //     if (newValue >= 1 && newValue <= steps.value.length) {
-  //       activeSlide.value = newValue
-  //     }
-  //   }
-  //   return {
-  //     activeSlide,
-  //     setSlide,
-  //     navigate,
-  //     steps,
-  //   }
-  // },
-
   mounted() {
-    const val = this.$route.query
-    // .steps.split(',')
-    this.steps = val.steps.split(',')
+    const val = this.$route.query.steps ? this.$route.query.steps : '1,2,3,4,5,6,7,8'
+    this.steps = val.split(',')
     console.log(val, this.steps, 'this.steps')
+    // if (FaceMesh) {
+    //   const faceMesh = new FaceMesh()
+    //   // Your initialization code here...
+    // } else {
+    //   console.error('FaceMesh is not defined')
+    // }
+    const startButton = document.getElementById('start-button')
+    if (startButton) {
+      startButton.addEventListener('click', this.createFireworks)
+    }
   },
   methods: {
     setSlide(id: number) {
-      // this.activeSlide = id
+      this.activeSlide = id
     },
-    // navigate(direction: number) {
-    //   const newValue = this.activeSlide + direction
-    //   console.log(newValue, 'newValue', this.steps)
-    //   const stepsAsNumbers = this.steps.map(Number)
-    //   console.log(stepsAsNumbers.includes(newValue), 'stepsAsNumbers.includes(newValue)')
-    //   if (stepsAsNumbers.includes(newValue)) {
-    //     this.activeSlide = newValue
-    //   } else {
-    //     const nextAvailableValue = stepsAsNumbers.find(step => step > this.activeSlide)
-    //     if (nextAvailableValue) {
-    //       this.activeSlide = nextAvailableValue
-    //     } else {
-    //       const previousAvailableValue = stepsAsNumbers.find(step => step < this.activeSlide)
-    //       if (previousAvailableValue) {
-    //         this.activeSlide = previousAvailableValue
-    //       }
-    //     }
-    //   }
-    // },
     navigate(direction: number) {
       const stepsAsNumbers = this.steps.map(Number)
       const currentIndex = stepsAsNumbers.indexOf(this.activeSlide)
@@ -597,25 +622,9 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-[type='text'],
-input:where(:not([type])),
-[type='email'],
-[type='url'],
-[type='password'],
-[type='number'],
-[type='date'],
-[type='datetime-local'],
-[type='month'],
-[type='search'],
-[type='tel'],
-[type='time'],
-[type='week'],
-[multiple],
-textarea,
-select {
-  --tw-ring-color: none !important;
-}
+<style lang="scss" >
+@use '@core/scss/pages/page-auth.scss';
+
 .slide-container {
   position: relative;
   height: 450px; /* Adjust as needed */
@@ -634,10 +643,84 @@ select {
 }
 
 .slide.hidden {
-  transform: translateY(-100%); /* Move slide up to hide it */
+  animation: slideOut 0.5s forwards;
 }
 
 .slide.active {
-  transform: translateY(0); /* Move slide into view */
+  animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideOut {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes firework {
+  0% {
+    transform: translate(-50%, 60vh);
+    width: 10px; /* Fixed size */
+    height: 10px; /* Fixed size */
+    opacity: 1;
+  }
+  50% {
+    width: 10px; /* Fixed size */
+    height: 10px; /* Fixed size */
+    opacity: 1;
+  }
+  100% {
+    width: 100px; /* Explode to larger size */
+    height: 100px; /* Explode to larger size */
+    opacity: 0;
+  }
+}
+
+.firework,
+.firework::before,
+.firework::after {
+  --top: 60vh;
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px; /* Fixed size */
+  height: 10px; /* Fixed size */
+  background: radial-gradient(circle, #ff0 0.5px, #ff0 0) 50% 0%,
+    radial-gradient(circle, #ff0000f8 0.5px, #ff3c00 0) 0% 50%,
+    radial-gradient(circle, rgb(98, 0, 255) 0.5px, rgb(98, 0, 255) 0) 50% 99%,
+    radial-gradient(circle, rgb(255, 0, 170) 0.5px, rgb(255, 0, 170) 0) 99% 50%,
+    radial-gradient(circle, rgb(0, 204, 255) 0.5px, rgb(0, 204, 255) 0) 80% 90%,
+    radial-gradient(circle, rgb(255, 0, 0) 0.5px, rgb(255, 0, 0) 0) 95% 90%,
+    radial-gradient(circle, rgba(255, 0, 212, 0.911) 0.5px, #ff0 0) 10% 60%,
+    radial-gradient(circle, rgb(255, 123, 0) 0.5px, rgb(255, 123, 0) 0) 31% 80%,
+    radial-gradient(circle, rgb(0, 255, 76) 0.5px, rgb(0, 255, 76) 0) 80% 10%,
+    radial-gradient(circle, rgb(0, 26, 255) 0.5px, rgb(0, 26, 255) 0) 90% 23%,
+    radial-gradient(circle, rgb(195, 0, 255) 0.5px, rgb(195, 0, 255) 0) 45% 20%,
+    radial-gradient(circle, rgb(0, 255, 0) 0.5px, rgb(23, 196, 158) 0) 13% 24%;
+  background-size: 5px 5px; /* Keep background size consistent */
+  background-repeat: no-repeat;
+  animation: firework 2s infinite;
+  display: none; /* Initially hidden */
+}
+
+.firework::before {
+  transform: translate(-50%, -50%) rotate(2deg) !important;
+}
+
+.firework::after {
+  transform: translate(-50%, -50%) rotate(-40deg) !important;
 }
 </style>

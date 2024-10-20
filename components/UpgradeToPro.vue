@@ -84,7 +84,7 @@
   inset-inline-end: 79px;
 
   &:hover {
-    color: white;
+    // color: white;
     text-decoration: none;
   }
 

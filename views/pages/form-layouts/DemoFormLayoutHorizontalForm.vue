@@ -181,9 +181,9 @@ const checkbox = ref(false)
   </VForm>
 </template>
 <style lang="scss">
-.v-col .v-col-12 {
-  padding: 6px !important;
-  padding-top: 3px !important;
-  padding-bottom: 3px !important;
-}
+// .v-col .v-col-12 {
+//   padding: 6px !important;
+//   padding-top: 3px !important;
+//   padding-bottom: 3px !important;
+// }
 </style>

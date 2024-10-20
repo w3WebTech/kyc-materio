@@ -135,7 +135,7 @@
     />
   </div>
 </template>
-<style lang="scss" scoped>
+<style lang="scss" >
 @use '@core/scss/pages/page-auth.scss';
 </style>
 <script setup lang="ts">
