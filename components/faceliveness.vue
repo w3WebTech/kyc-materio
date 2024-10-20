@@ -393,16 +393,18 @@ export default {
         snapshotCanvas.height = canvasElement.height
         const snapshotCtx = snapshotCanvas.getContext('2d')
 
-        // Draw the current video frame onto the snapshot canvas
-        snapshotCtx.drawImage(videoElement, 0, 0, snapshotCanvas.width, snapshotCanvas.height)
+        try {
+          // Draw the current video frame onto the snapshot canvas
+          snapshotCtx.drawImage(videoElement, 0, 0, snapshotCanvas.width, snapshotCanvas.height)
+          console.log('Image captured successfully')
 
-        // Convert the canvas to a data URL and set it as the source of the snapshot image
-        const dataUrl = snapshotCanvas.toDataURL('image/png', 1.0) // Full quality
-        snapshot.src = dataUrl
-        snapshot.style.display = 'block' // Make the snapshot visible
-
-        // Hide the video container if needed
-        document.getElementById('video-container').style.display = 'none'
+          // Convert the canvas to a data URL and set it as the source of the snapshot image
+          const dataUrl = snapshotCanvas.toDataURL('image/png', 1.0) // Full quality
+          snapshot.src = dataUrl
+          snapshot.style.display = 'block' // Make the snapshot visible
+        } catch (error) {
+          console.error('Error capturing image: ', error)
+        }
       }
     },
   },
