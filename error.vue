@@ -17,24 +17,20 @@ const props = defineProps<{
 const vuetifyTheme = useTheme()
 
 const authThemeMask = computed(() => {
-  return vuetifyTheme.global.name.value === 'light'
-    ? miscMaskLight
-    : miscMaskDark
+  return vuetifyTheme.global.name.value === 'light' ? miscMaskLight : miscMaskDark
 })
 
 const isDev = process.dev
-
+debugger
 const errToShow = computed(() => {
   const is404 = props.error?.statusCode === 404 || props.error.message?.includes('404')
 
   if (is404) {
     return {
       title: 'Page Not Found',
-      description: 'We couldn\'t find the page you are looking for.',
+      description: "We couldn't find the page you are looking for.",
     }
-  }
-
-  else if (isDev) {
+  } else if (isDev) {
     return {
       title: props.error?.statusMessage,
       description: props.error.message,
@@ -43,7 +39,7 @@ const errToShow = computed(() => {
 
   return {
     title: 'Oops! Something went wrong.',
-    description: 'We are working on it and we\'ll get it fixed as soon as we can',
+    description: "We are working on it and we'll get it fixed as soon as we can",
   }
 })
 
@@ -62,7 +58,7 @@ const handleError = () => clearError({ redirect: '/' })
       <!-- eslint-disable vue/no-v-html -->
       <div
         v-if="isDev"
-        style="max-inline-size: 80dvw; overflow-x: scroll;"
+        style="max-inline-size: 80dvw; overflow-x: scroll"
         v-html="error.stack"
       />
       <!-- eslint-enable -->
@@ -98,7 +94,7 @@ const handleError = () => clearError({ redirect: '/' })
 </template>
 
 <style lang="scss">
-@use "@core/scss/pages/misc.scss";
+@use '@core/scss/pages/misc.scss';
 
 .misc-footer-tree {
   inline-size: 15.625rem;

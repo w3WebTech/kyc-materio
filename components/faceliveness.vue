@@ -41,8 +41,8 @@
 <style lang="scss">
 .video-container {
   position: relative;
-  width: 350px;
-  height: 450px;
+  width: 300px;
+  height: 400px;
 
   background: #ffffff;
   border-radius: 60%;
@@ -82,8 +82,8 @@ canvas {
   top: 50%;
   left: 50%;
 
-  width: 350px;
-  height: 400px;
+  width: 300px;
+  height: 350px;
   border: 2px solid red;
   border-radius: 60%;
   transform: translate(-50%, -50%);
@@ -112,10 +112,32 @@ export default {
       const videoElement = document.getElementById('video') as HTMLVideoElement
       const canvasElement = document.getElementById('canvas') as HTMLCanvasElement
 
+      // const videoElement = document.getElementById('video') as HTMLVideoElement;
+      // const canvasElement = document.getElementById('canvas') as HTMLCanvasElement;
+
       if (!videoElement || !canvasElement) {
         console.error('Video or Canvas element not found')
         return
       }
+
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(stream => {
+          videoElement.srcObject = stream
+          videoElement.onloadedmetadata = () => {
+            videoElement.play()
+
+            const canvasCtx = canvasElement.getContext('2d') as CanvasRenderingContext2D
+            const faceMesh = new FaceMesh({
+              locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
+            })
+
+            // Rest of your face mesh initialization...
+          }
+        })
+        .catch(error => {
+          console.error('Error accessing the camera:', error)
+        })
 
       // The rest of your setup code...
       // const videoElement = document.getElementById('video') as HTMLVideoElement
