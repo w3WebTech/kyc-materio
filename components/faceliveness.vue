@@ -131,8 +131,8 @@ export default defineComponent({
           const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
 
           // Debugging output
-          alert('Face size correct:', isFaceSizeCorrect)
-          alert('Lines are perpendicular:', areLinesPerpendicular)
+          console.log('Face size correct:', isFaceSizeCorrect)
+          console.log('Lines are perpendicular:', areLinesPerpendicular)
 
           if (isFaceSizeCorrect && areLinesPerpendicular) {
             if (blinkCount >= 2) {
@@ -146,8 +146,19 @@ export default defineComponent({
             blinkCount = 0 // Reset blink count
             message.style.display = 'block' // Show the message
           }
+          drawInvertedTriangle(canvasCtx, landmarks, 33, 263, 152)
+
+          // Draw face oval connector
+          drawFaceOvalConnector(canvasCtx, landmarks)
+
+          // Log all coordinates and angle results to console
+          logResults(landmarks)
         }
+      } else {
+        message.textContent = 'No face detected. Please try again.'
+        message.style.display = 'block' // Show the message if no face is detected
       }
+
       canvasCtx.restore()
     }
 
@@ -335,14 +346,7 @@ export default defineComponent({
       const dataUrl = snapshotCanvas.toDataURL('image/png')
       snapshot.src = dataUrl // Set the src of the snapshot image
       snapshot.style.display = 'block' // Show the snapshot image
-      alert('Image captured:', dataUrl)
-      // Hide the video container if needed
-      const videoContainer = document.getElementById('video-container')
-      if (videoContainer) {
-        videoContainer.style.display = 'none' // Ensure 'video-container' exists
-      }
-
-      console.log('Image captured:', dataUrl) // Debug: log the data URL
+      alert('Image captured') // Remove the data URL alert for better user experience
     }
   },
 })
