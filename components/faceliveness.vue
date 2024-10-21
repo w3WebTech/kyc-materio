@@ -99,7 +99,7 @@ export default defineComponent({
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true })
         videoElement.srcObject = stream
-        console.log('Camera access granted')
+        alert('Camera access granted')
       } catch (error) {
         console.error('Error accessing the camera: ', error)
         alert('Camera access is required to use this feature.')
@@ -130,8 +130,8 @@ export default defineComponent({
           drawLandmarks(canvasCtx, landmarks)
 
           const isFaceSizeCorrect = checkFaceSize(landmarks)
-
-          if (isFaceSizeCorrect) {
+          const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
+          if (isFaceSizeCorrect && areLinesPerpendicular) {
             message.style.display = 'block'
             if (blinkCount >= 2) {
               captureImage(canvasElement, videoElement, snapshot)
@@ -314,9 +314,9 @@ export default defineComponent({
     }
 
     function logResults(landmarks: Landmark[]) {
-      console.log('Landmarks:')
+      alert('Landmarks:')
       for (let i = 0; i < landmarks.length; i++) {
-        console.log(`Point ${i}:`, landmarks[i].x * canvasElement.width, landmarks[i].y * canvasElement.height)
+        alert(`Point ${i}:`, landmarks[i].x * canvasElement.width, landmarks[i].y * canvasElement.height)
       }
     }
 
@@ -337,7 +337,7 @@ export default defineComponent({
       const dataUrl = snapshotCanvas.toDataURL('image/png')
       snapshot.src = dataUrl // Set the src of the snapshot image
       snapshot.style.display = 'block' // Show the snapshot image
-
+      alert('Image captured:', dataUrl)
       // Hide the video container if needed
       const videoContainer = document.getElementById('video-container')
       if (videoContainer) {
