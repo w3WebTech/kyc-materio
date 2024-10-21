@@ -1,6 +1,6 @@
 <template>
   <div id="main-video-container">
-    <div class="row">
+    <div class="row h-screen">
       <div class="video-container mb-3">
         <video
           id="video"
