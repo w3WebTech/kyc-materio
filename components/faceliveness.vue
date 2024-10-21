@@ -326,20 +326,14 @@ export default defineComponent({
 }
 </style> -->
 <template>
-  <div
-    id="video-container"
-    class=""
-  >
+  <div id="main-video-container">
     <div class="row">
-      <div
-        id="video-container"
-        class="video-container mb-3"
-      >
+      <div class="video-container mb-3">
         <video
           v-if="isMounted"
           id="video"
           width="800"
-          height=" 1100"
+          height="1100"
           autoplay
         ></video>
         <canvas
@@ -361,12 +355,10 @@ export default defineComponent({
         alt="Snapshot"
         class="img-fluid mb-3"
       />
-      <!-- <div class="text-center">
-                    <button id="remove-snapshot" class="btn btn-primary block" >Remove Snapshot</button>
-                </div> -->
     </div>
   </div>
 </template>
+
 
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'
@@ -390,6 +382,9 @@ export default defineComponent({
 
     onMounted(async () => {
       const videoElement = document.getElementById('video') as HTMLVideoElement
+      if (videoElement && videoElement.srcObject) {
+        videoElement.play() // Make sure the video is playing
+      }
 
       await requestCameraAccess(videoElement) // Request camera access
 
@@ -424,10 +419,13 @@ export default defineComponent({
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true })
         videoElement.srcObject = stream
+        console.log('Camera access granted')
       } catch (error) {
         console.error('Error accessing the camera: ', error)
+        alert('Camera access is required to use this feature.')
       }
     }
+
     function onResults(
       results: FaceMeshResults,
       canvasCtx: CanvasRenderingContext2D,
