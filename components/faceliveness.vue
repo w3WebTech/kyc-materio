@@ -659,9 +659,18 @@ export default defineComponent({
 
       // Get the data URL and set it as the source for the snapshot image
       const dataUrl = snapshotCanvas.toDataURL('image/png')
-      snapshot.src = dataUrl // Set the src of the snapshot image
-      snapshot.style.display = 'block' // Show the snapshot image
-      alert('Image captured') // Alert the user that the image has been captured
+      snapshot.src = dataUrl 
+         setTimeout(() => {
+                document.getElementById('video-container').style.display ='none';
+    snapshot.style.display = 'block'; // Show the snapshot image
+  }, 100); // Adjust the delay as needed (100ms here)
+
+  alert('Image captured');
+            // snapshot.style.display = 'block';
+            // 
+        }
+      // snapshot.style.display = 'block' // Show the snapshot image
+      // alert('Image captured') // Alert the user that the image has been captured
     }
   },
 })
