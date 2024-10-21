@@ -1,4 +1,4 @@
-<template>
+<!--<template>
   <div id="main-video-container">
     <div class="row h-screen">
       <div class="video-container mb-3">
@@ -112,8 +112,9 @@ export default defineComponent({
       }
     }
     function onResults(results: FaceMeshResults) {
-      if (imageCaptured) return
       alert('onResults')
+      if (imageCaptured) return
+
       canvasCtx.save()
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height)
@@ -417,4 +418,304 @@ canvas {
     visibility: hidden;
   }
 }
+</style>-->
+<template>
+  <div id="main-video-container">
+    <div class="row h-screen">
+      <div class="video-container mb-3">
+        <video
+          id="video"
+          width="800"
+          height="1100"
+          autoplay
+        ></video>
+        <canvas
+          id="canvas"
+          width="800"
+          height="1100"
+        ></canvas>
+        <div id="faceOval"></div>
+      </div>
+      <div
+        id="message"
+        class="text-center mb-3"
+      >
+        Please ensure your face is straight and filling 30% of the frame
+      </div>
+      <img
+        id="snapshot"
+        src=""
+        alt="Snapshot"
+        class="img-fluid mb-3"
+      />
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, onMounted, ref } from 'vue'
+
+declare var FaceMesh: any // Declare FaceMesh for TypeScript
+declare var Camera: any
+
+interface Landmark {
+  x: number
+  y: number
+}
+
+interface FaceMeshResults {
+  image: HTMLVideoElement
+  multiFaceLandmarks?: Landmark[][]
+}
+
+export default defineComponent({
+  setup() {
+    const isMounted = ref(false)
+    let imageCaptured = false
+    let blinkCount = 0
+    let canvasCtx: CanvasRenderingContext2D
+    let canvasElement: HTMLCanvasElement
+    let message: HTMLDivElement
+    let snapshot: HTMLImageElement
+    let videoElement: HTMLVideoElement
+
+    onMounted(async () => {
+      // Load the Mediapipe Face Mesh library
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js'
+      script.async = true
+
+      script.onload = async () => {
+        alert('Mediapipe Face Mesh loaded')
+        isMounted.value = true // Set the component as mounted
+
+        videoElement = document.getElementById('video') as HTMLVideoElement
+        await requestCameraAccess(videoElement) // Request camera access
+
+        canvasElement = document.getElementById('canvas') as HTMLCanvasElement
+        canvasCtx = canvasElement.getContext('2d') as CanvasRenderingContext2D
+        message = document.getElementById('message') as HTMLDivElement
+        snapshot = document.getElementById('snapshot') as HTMLImageElement
+
+        const faceMesh = new FaceMesh({
+          locateFile: (file: any) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
+        })
+
+        faceMesh.setOptions({
+          maxNumFaces: 2,
+          refineLandmarks: true,
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        })
+
+        faceMesh.onResults(onResults)
+
+        const camera = new Camera(videoElement, {
+          onFrame: async () => {
+            await faceMesh.send({ image: videoElement })
+          },
+          width: 640,
+          height: 480,
+        })
+        camera.start()
+      }
+
+      document.head.appendChild(script)
+    })
+
+    async function requestCameraAccess(videoElement: HTMLVideoElement) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true })
+        videoElement.srcObject = stream
+        alert('Camera access granted')
+      } catch (error) {
+        console.error('Error accessing the camera: ', error)
+        alert('Camera access is required to use this feature.')
+      }
+    }
+
+    function onResults(results: FaceMeshResults) {
+      if (imageCaptured) return
+
+      canvasCtx.save()
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
+      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height)
+      if (results.multiFaceLandmarks) {
+        if (results.multiFaceLandmarks.length > 1) {
+          message.textContent = 'Multiple faces detected! Please ensure only one face is visible.'
+          message.style.display = 'block'
+          return
+        } else {
+          message.style.display = 'none' // Hide the message if a single face is detected
+        }
+
+        for (const landmarks of results.multiFaceLandmarks) {
+          // Draw landmarks
+          drawLandmarks(canvasCtx, landmarks)
+
+          // Check conditions for capturing image
+          const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
+          const isFaceSizeCorrect = checkFaceSize(landmarks)
+
+          if (isFaceSizeCorrect && areLinesPerpendicular) {
+            if (blinkCount >= 2) {
+              captureImage()
+              imageCaptured = true
+            } else {
+              blinkCount++
+            }
+          } else {
+            message.textContent = 'Face is not in the correct size range. Please adjust your position.'
+            message.style.display = 'block'
+            blinkCount = 0 // Reset blink count
+          }
+        }
+      }
+      canvasCtx.restore()
+    }
+
+    function drawLandmarks(ctx: CanvasRenderingContext2D, landmarks: Landmark[]) {
+      for (const landmark of landmarks) {
+        const x = landmark.x * canvasElement.width
+        const y = landmark.y * canvasElement.height
+        ctx.beginPath()
+        ctx.fillStyle = '#FF0000'
+        ctx.arc(x, y, 2, 0, 2 * Math.PI)
+        ctx.fill()
+      }
+    }
+
+    function checkPerpendicularLines(ctx: CanvasRenderingContext2D, landmarks: Landmark[]) {
+      // Define landmarks for the lines
+      const leftEye = landmarks[33] // Left eye outer corner
+      const rightEye = landmarks[263] // Right eye outer corner
+      const noseTip = landmarks[1] // Nose tip
+      const upperLip = landmarks[13] // Upper lip
+      const lowerLip = landmarks[14] // Lower lip
+      const chin = landmarks[152] // Chin point
+
+      const leftEyeX = leftEye.x * canvasElement.width
+      const leftEyeY = leftEye.y * canvasElement.height
+      const rightEyeX = rightEye.x * canvasElement.width
+      const rightEyeY = rightEye.y * canvasElement.height
+      const noseTipX = noseTip.x * canvasElement.width
+      const noseTipY = noseTip.y * canvasElement.height
+      const upperLipX = upperLip.x * canvasElement.width
+      const upperLipY = upperLip.y * canvasElement.height
+      const lowerLipX = lowerLip.x * canvasElement.width
+      const lowerLipY = lowerLip.y * canvasElement.height
+      const chinX = chin.x * canvasElement.width
+      const chinY = chin.y * canvasElement.height
+
+      const eyesCenterX = (leftEyeX + rightEyeX) / 2
+      const eyesCenterY = (leftEyeY + rightEyeY) / 2
+      const faceWidth = rightEyeX - leftEyeX
+      const margin = faceWidth * 0.1 // 10% margin
+
+      const withinMargin = Math.abs(noseTipX - eyesCenterX) <= margin
+
+      ctx.strokeStyle = '#00FF00'
+      ctx.lineWidth = 2
+
+      // Draw horizontal line through eyes
+      ctx.beginPath()
+      ctx.moveTo(leftEyeX, eyesCenterY)
+      ctx.lineTo(rightEyeX, eyesCenterY)
+      ctx.stroke()
+
+      // Draw vertical line through nose and chin
+      ctx.beginPath()
+      ctx.moveTo(noseTipX, eyesCenterY)
+      ctx.lineTo(noseTipX, chinY)
+      ctx.stroke()
+
+      // Calculate angles between lines
+      const horizontalLineAngle = Math.atan2(rightEyeY - leftEyeY, rightEyeX - leftEyeX) * (180 / Math.PI)
+      const verticalLineAngle = 0 // Vertical line has a fixed angle of 0
+      const angleDiff1 = Math.abs(horizontalLineAngle - verticalLineAngle)
+
+      return Math.abs(angleDiff1) <= 3 && withinMargin
+    }
+
+    function checkFaceSize(landmarks: Landmark[]) {
+      const topOfForehead = landmarks[10]
+      const bottomOfChin = landmarks[152]
+
+      const faceHeight = (bottomOfChin.y - topOfForehead.y) * canvasElement.height
+      const videoHeight = canvasElement.height
+
+      const faceSizeRatio = faceHeight / videoHeight
+      return faceSizeRatio >= 0.3 && faceSizeRatio <= 0.85
+    }
+
+    function captureImage() {
+      const snapshotCanvas = document.createElement('canvas')
+      snapshotCanvas.width = canvasElement.width
+      snapshotCanvas.height = canvasElement.height
+      const snapshotCtx = snapshotCanvas.getContext('2d')
+
+      // Draw the current frame from the video onto the snapshot canvas
+      snapshotCtx?.drawImage(canvasElement, 0, 0, snapshotCanvas.width, snapshotCanvas.height)
+
+      // Get the data URL and set it as the source for the snapshot image
+      const dataUrl = snapshotCanvas.toDataURL('image/png')
+      snapshot.src = dataUrl // Set the src of the snapshot image
+      snapshot.style.display = 'block' // Show the snapshot image
+      alert('Image captured') // Alert the user that the image has been captured
+    }
+  },
+})
+</script>
+
+<style scoped>
+.video-container {
+  position: relative;
+  width: 300px;
+  height: 400px;
+  background: #ffffff;
+  border-radius: 60%;
+}
+
+video,
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 60%;
+}
+
+#message {
+  margin-top: 20px;
+  color: red;
+  font-weight: bold;
+  display: none;
+}
+
+#snapshot {
+  margin-top: 20px;
+  border: 2px solid #ccc;
+  display: none;
+  border-radius: 60%;
+}
+
+#faceOval {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 350px;
+  border: 2px solid red;
+  border-radius: 60%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
 </style>
+
