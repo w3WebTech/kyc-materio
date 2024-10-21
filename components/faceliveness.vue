@@ -392,14 +392,6 @@ export default defineComponent({
       const videoElement = document.getElementById('video') as HTMLVideoElement
 
       await requestCameraAccess(videoElement) // Request camera access
-      async function requestCameraAccess(videoElement: HTMLVideoElement) {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true })
-          videoElement.srcObject = stream
-        } catch (error) {
-          console.error('Error accessing the camera: ', error)
-        }
-      }
 
       const canvasElement = document.getElementById('canvas') as HTMLCanvasElement
       const canvasCtx = canvasElement.getContext('2d') as CanvasRenderingContext2D
@@ -407,7 +399,7 @@ export default defineComponent({
       const snapshot = document.getElementById('snapshot') as HTMLImageElement
 
       const faceMesh = new FaceMesh({
-        locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
+        locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
       })
 
       faceMesh.setOptions({
@@ -428,7 +420,14 @@ export default defineComponent({
       })
       camera.start()
     })
-
+    async function requestCameraAccess(videoElement: HTMLVideoElement) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true })
+        videoElement.srcObject = stream
+      } catch (error) {
+        console.error('Error accessing the camera: ', error)
+      }
+    }
     function onResults(
       results: FaceMeshResults,
       canvasCtx: CanvasRenderingContext2D,
