@@ -120,10 +120,10 @@ export default defineComponent({
       if (results.multiFaceLandmarks) {
         if (results.multiFaceLandmarks.length > 1) {
           message.textContent = 'Multiple faces detected! Please ensure only one face is visible.'
-          message.style.display = 'block' // Show the message
-          return // Stop processing if more than one face is detected
+          message.style.display = 'block'
+          return
         } else {
-          message.style.display = 'none' // Hide the message if a single face is detected
+          message.style.display = 'none'
         }
 
         for (const landmarks of results.multiFaceLandmarks) {
@@ -135,7 +135,7 @@ export default defineComponent({
             message.style.display = 'block'
             if (blinkCount >= 2) {
               captureImage(canvasElement, videoElement, snapshot)
-              imageCaptured = true
+              imageCaptured = true // Mark image as captured
             } else {
               blinkCount++
             }
@@ -328,12 +328,23 @@ export default defineComponent({
       const snapshotCanvas = document.createElement('canvas')
       snapshotCanvas.width = canvasElement.width
       snapshotCanvas.height = canvasElement.height
-      const snapshotCtx = snapshotCanvas.getContext('2d') as CanvasRenderingContext2D
-      snapshotCtx.drawImage(videoElement, 0, 0, snapshotCanvas.width, snapshotCanvas.height)
+      const snapshotCtx = snapshotCanvas.getContext('2d')
+
+      // Draw the current frame from the video onto the snapshot canvas
+      snapshotCtx?.drawImage(videoElement, 0, 0, snapshotCanvas.width, snapshotCanvas.height)
+
+      // Get the data URL and set it as the source for the snapshot image
       const dataUrl = snapshotCanvas.toDataURL('image/png')
-      snapshot.src = dataUrl
-      snapshot.style.display = 'block'
-      document.getElementById('video-container')!.style.display = 'none' // Use non-null assertion
+      snapshot.src = dataUrl // Set the src of the snapshot image
+      snapshot.style.display = 'block' // Show the snapshot image
+
+      // Hide the video container if needed
+      const videoContainer = document.getElementById('video-container')
+      if (videoContainer) {
+        videoContainer.style.display = 'none' // Ensure 'video-container' exists
+      }
+
+      console.log('Image captured:', dataUrl) // Debug: log the data URL
     }
   },
 })
