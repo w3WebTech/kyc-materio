@@ -536,7 +536,7 @@ export default defineComponent({
 
     function onResults(results: FaceMeshResults) {
       if (imageCaptured) return
-
+      alert('onResults')
       canvasCtx.save()
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height)
@@ -556,9 +556,11 @@ export default defineComponent({
           // Check conditions for capturing image
           const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
           const isFaceSizeCorrect = checkFaceSize(landmarks)
-
+          alert(areLinesPerpendicular)
           if (isFaceSizeCorrect && areLinesPerpendicular) {
+            alert('before blinck')
             if (blinkCount >= 2) {
+              alert('after blinck')
               captureImage()
               imageCaptured = true
             } else {
@@ -586,6 +588,7 @@ export default defineComponent({
     }
 
     function checkPerpendicularLines(ctx: CanvasRenderingContext2D, landmarks: Landmark[]) {
+      alert('checkPerpendicularLines')
       // Define landmarks for the lines
       const leftEye = landmarks[33] // Left eye outer corner
       const rightEye = landmarks[263] // Right eye outer corner
@@ -638,6 +641,7 @@ export default defineComponent({
     }
 
     function checkFaceSize(landmarks: Landmark[]) {
+      alert('checkFaceSize')
       const topOfForehead = landmarks[10]
       const bottomOfChin = landmarks[152]
 
@@ -660,6 +664,7 @@ export default defineComponent({
       // Get the data URL and set it as the source for the snapshot image
       const dataUrl = snapshotCanvas.toDataURL('image/png')
       snapshot.src = dataUrl
+      alert('dataUrl', dataUrl)
       setTimeout(() => {
         document.getElementById('video-container').style.display = 'none'
         snapshot.style.display = 'block' // Show the snapshot image
