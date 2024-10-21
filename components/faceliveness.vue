@@ -80,7 +80,9 @@ export default defineComponent({
           minTrackingConfidence: 0.5,
         })
 
-        faceMesh.onResults((results: FaceMeshResults) => onResults(results, canvasCtx, message, snapshot))
+        faceMesh.onResults((results: FaceMeshResults) =>
+          onResults(results, canvasCtx, message, snapshot, canvasElement, videoElement),
+        )
 
         const camera = new Camera(videoElement, {
           onFrame: async () => {
@@ -110,29 +112,29 @@ export default defineComponent({
       canvasCtx: CanvasRenderingContext2D,
       message: HTMLDivElement,
       snapshot: HTMLImageElement,
+      canvasElement: HTMLCanvasElement,
+      videoElement: HTMLVideoElement,
     ) {
-      if (imageCaptured) return
+      if (imageCaptured) return // Prevent further processing
 
+      // Clear canvas and draw video
       canvasCtx.save()
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height)
 
-      if (results.multiFaceLandmarks) {
-        if (results.multiFaceLandmarks.length > 1) {
-          message.textContent = 'Multiple faces detected! Please ensure only one face is visible.'
-          message.style.display = 'block'
-          return
-        } else {
-          message.style.display = 'none'
-        }
+      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+        message.style.display = 'none' // Hide message if a face is detected
 
         for (const landmarks of results.multiFaceLandmarks) {
           drawLandmarks(canvasCtx, landmarks)
-
           const isFaceSizeCorrect = checkFaceSize(landmarks)
           const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
+
+          // Debugging output
+          alert('Face size correct:', isFaceSizeCorrect)
+          alert('Lines are perpendicular:', areLinesPerpendicular)
+
           if (isFaceSizeCorrect && areLinesPerpendicular) {
-            message.style.display = 'block'
             if (blinkCount >= 2) {
               captureImage(canvasElement, videoElement, snapshot)
               imageCaptured = true // Mark image as captured
@@ -141,13 +143,9 @@ export default defineComponent({
             }
           } else {
             message.textContent = 'Face is not in the correct size range. Please adjust your position.'
-            blinkCount = 0
-            return
+            blinkCount = 0 // Reset blink count
+            message.style.display = 'block' // Show the message
           }
-
-          drawInvertedTriangle(canvasCtx, landmarks, 33, 263, 152)
-          drawFaceOvalConnector(canvasCtx, landmarks)
-          logResults(landmarks)
         }
       }
       canvasCtx.restore()
