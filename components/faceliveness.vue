@@ -507,7 +507,7 @@ export default defineComponent({
           minDetectionConfidence: 0.5,
           minTrackingConfidence: 0.5,
         })
-
+        alert('FaceMesh initialized:', faceMesh)
         faceMesh.onResults(onResults)
 
         const camera = new Camera(videoElement, {
