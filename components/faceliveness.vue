@@ -59,6 +59,7 @@ export default defineComponent({
       script.async = true
 
       script.onload = async () => {
+        alert('Mediapipe Face Mesh loaded')
         isMounted.value = true // Set the component as mounted
 
         const videoElement = document.getElementById('video') as HTMLVideoElement
@@ -115,6 +116,7 @@ export default defineComponent({
       canvasElement: HTMLCanvasElement,
       videoElement: HTMLVideoElement,
     ) {
+      alert('Results received:')
       if (imageCaptured) return // Prevent further processing
 
       // Clear canvas and draw video
@@ -131,8 +133,8 @@ export default defineComponent({
           const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
 
           // Debugging output
-          console.log('Face size correct:', isFaceSizeCorrect)
-          console.log('Lines are perpendicular:', areLinesPerpendicular)
+          alert('Face size correct:', isFaceSizeCorrect)
+          alert('Lines are perpendicular:', areLinesPerpendicular)
 
           if (isFaceSizeCorrect && areLinesPerpendicular) {
             if (blinkCount >= 2) {
