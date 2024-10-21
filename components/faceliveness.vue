@@ -53,6 +53,9 @@ export default defineComponent({
     let blinkCount = 0
     let canvasCtx: CanvasRenderingContext2D
     let canvasElement: HTMLCanvasElement
+    let message: HTMLDivElement
+    let snapshot: HTMLDivElement
+    let videoElement: HTMLVideoElement
 
     onMounted(async () => {
       // Load the Mediapipe Face Mesh library
@@ -64,16 +67,16 @@ export default defineComponent({
         alert('Mediapipe Face Mesh loaded')
         isMounted.value = true // Set the component as mounted
 
-        const videoElement = document.getElementById('video') as HTMLVideoElement
+        videoElement = document.getElementById('video') as HTMLVideoElement
         await requestCameraAccess(videoElement) // Request camera access
 
         canvasElement = document.getElementById('canvas') as HTMLCanvasElement
         canvasCtx = canvasElement.getContext('2d') as CanvasRenderingContext2D // Ensure this line ends with a semicolon
-        const message = document.getElementById('message') as HTMLDivElement
-        const snapshot = document.getElementById('snapshot') as HTMLImageElement
+        message = document.getElementById('message') as HTMLDivElement
+        snapshot = document.getElementById('snapshot') as HTMLImageElement
 
         const faceMesh = new FaceMesh({
-          locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
+          locateFile: (file: any) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
         })
 
         faceMesh.setOptions({
@@ -110,7 +113,7 @@ export default defineComponent({
     }
     function onResults(results: FaceMeshResults) {
       if (imageCaptured) return
-
+      alert('onResults')
       canvasCtx.save()
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height)
@@ -140,7 +143,7 @@ export default defineComponent({
           const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
           const isFaceSizeCorrect = checkFaceSize(landmarks)
 
-          if (isFaceSizeCorrect) {
+          if (isFaceSizeCorrect && areLinesPerpendicular) {
             message.style.display = 'block'
             if (blinkCount >= 2) {
               // Blink 3 times (1s per blink)
@@ -337,11 +340,7 @@ export default defineComponent({
       }
     }
 
-    function captureImage(
-      canvasElement: HTMLCanvasElement,
-      videoElement: HTMLVideoElement,
-      snapshot: HTMLImageElement,
-    ) {
+    function captureImage() {
       const snapshotCanvas = document.createElement('canvas')
       snapshotCanvas.width = canvasElement.width
       snapshotCanvas.height = canvasElement.height
