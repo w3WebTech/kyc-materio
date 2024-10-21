@@ -51,6 +51,8 @@ export default defineComponent({
     const isMounted = ref(false)
     let imageCaptured = false
     let blinkCount = 0
+    let canvasCtx: CanvasRenderingContext2D
+    let canvasElement: HTMLCanvasElement
 
     onMounted(async () => {
       // Load the Mediapipe Face Mesh library
@@ -65,8 +67,8 @@ export default defineComponent({
         const videoElement = document.getElementById('video') as HTMLVideoElement
         await requestCameraAccess(videoElement) // Request camera access
 
-        const canvasElement = document.getElementById('canvas') as HTMLCanvasElement
-        const canvasCtx = canvasElement.getContext('2d') as CanvasRenderingContext2D // Ensure this line ends with a semicolon
+        canvasElement = document.getElementById('canvas') as HTMLCanvasElement
+        canvasCtx = canvasElement.getContext('2d') as CanvasRenderingContext2D // Ensure this line ends with a semicolon
         const message = document.getElementById('message') as HTMLDivElement
         const snapshot = document.getElementById('snapshot') as HTMLImageElement
 
@@ -81,9 +83,7 @@ export default defineComponent({
           minTrackingConfidence: 0.5,
         })
 
-        faceMesh.onResults((results: FaceMeshResults) =>
-          onResults(results, canvasCtx, message, snapshot, canvasElement, videoElement),
-        )
+        faceMesh.onResults(onResults)
 
         const camera = new Camera(videoElement, {
           onFrame: async () => {
@@ -108,46 +108,56 @@ export default defineComponent({
         alert('Camera access is required to use this feature.')
       }
     }
-    function onResults(
-      results: FaceMeshResults,
-      canvasCtx: CanvasRenderingContext2D,
-      message: HTMLDivElement,
-      snapshot: HTMLImageElement,
-      canvasElement: HTMLCanvasElement,
-      videoElement: HTMLVideoElement,
-    ) {
-      alert('Results received:')
-      if (imageCaptured) return // Prevent further processing
+    function onResults(results: FaceMeshResults) {
+      if (imageCaptured) return
 
-      // Clear canvas and draw video
       canvasCtx.save()
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height)
+      if (results.multiFaceLandmarks) {
+        // Check if multiple faces are detected
 
-      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-        message.style.display = 'none' // Hide message if a face is detected
+        if (results.multiFaceLandmarks.length > 1) {
+          message.textContent = 'Multiple faces detected! Please ensure only one face is visible.'
+          message.style.display = 'block' // Show the message
+          return // Stop processing if more than one face is detected
+        } else {
+          message.style.display = 'none' // Hide the message if a single face is detected
+        }
 
         for (const landmarks of results.multiFaceLandmarks) {
-          drawLandmarks(canvasCtx, landmarks)
-          const isFaceSizeCorrect = checkFaceSize(landmarks)
+          // Draw points
+          for (let i = 0; i < landmarks.length; i++) {
+            const x = landmarks[i].x * canvasElement.width
+            const y = landmarks[i].y * canvasElement.height
+            canvasCtx.beginPath()
+            canvasCtx.fillStyle = '#FF0000'
+            canvasCtx.arc(x, y, 2, 0, 2 * Math.PI)
+            canvasCtx.fill()
+          }
+
+          // Check perpendicular intersecting lines
           const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
+          const isFaceSizeCorrect = checkFaceSize(landmarks)
 
-          // Debugging output
-          alert('Face size correct:', isFaceSizeCorrect)
-          alert('Lines are perpendicular:', areLinesPerpendicular)
-
-          if (isFaceSizeCorrect && areLinesPerpendicular) {
+          if (isFaceSizeCorrect) {
+            message.style.display = 'block'
             if (blinkCount >= 2) {
-              captureImage(canvasElement, videoElement, snapshot)
-              imageCaptured = true // Mark image as captured
+              // Blink 3 times (1s per blink)
+              message.style.display = 'none'
+              captureImage()
+              imageCaptured = true
             } else {
               blinkCount++
             }
           } else {
+            message.style.display = 'block'
             message.textContent = 'Face is not in the correct size range. Please adjust your position.'
-            blinkCount = 0 // Reset blink count
-            message.style.display = 'block' // Show the message
+            return
+            blinkCount = 0
           }
+
+          // Draw inverted triangle between center lines of both eyes and jaw line
           drawInvertedTriangle(canvasCtx, landmarks, 33, 263, 152)
 
           // Draw face oval connector
@@ -156,11 +166,7 @@ export default defineComponent({
           // Log all coordinates and angle results to console
           logResults(landmarks)
         }
-      } else {
-        message.textContent = 'No face detected. Please try again.'
-        message.style.display = 'block' // Show the message if no face is detected
       }
-
       canvasCtx.restore()
     }
 
