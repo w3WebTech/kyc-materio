@@ -326,22 +326,45 @@ export default defineComponent({
 }
 </style> -->
 <template>
-  <div id="video-container">
-    <video
-      id="video"
-      autoplay
-      playsinline
-      style="display: none"
-    ></video>
-    <canvas id="canvas"></canvas>
-    <div
-      id="message"
-      style="display: none"
-    ></div>
-    <img
-      id="snapshot"
-      style="display: none"
-    />
+  <div
+    id="video-container"
+    class=""
+  >
+    <div class="row">
+      <div
+        id="video-container"
+        class="video-container mb-3"
+      >
+        <video
+          v-if="isMounted"
+          id="video"
+          width="800"
+          height=" 1100"
+          autoplay
+        ></video>
+        <canvas
+          id="canvas"
+          width="800"
+          height="1100"
+        ></canvas>
+        <div id="faceOval"></div>
+      </div>
+      <div
+        id="message"
+        class="text-center mb-3"
+      >
+        Please ensure your face is straight and filling 30% of the frame
+      </div>
+      <img
+        id="snapshot"
+        src=""
+        alt="Snapshot"
+        class="img-fluid mb-3"
+      />
+      <!-- <div class="text-center">
+                    <button id="remove-snapshot" class="btn btn-primary block" >Remove Snapshot</button>
+                </div> -->
+    </div>
   </div>
 </template>
 
@@ -349,7 +372,7 @@ export default defineComponent({
 import { defineComponent, onMounted } from 'vue'
 import { FaceMesh } from '@mediapipe/face_mesh' // Ensure you are using the correct import
 import { Camera } from '@mediapipe/camera_utils'
-
+const isMounted = ref(false)
 interface Landmark {
   x: number
   y: number
@@ -366,6 +389,7 @@ export default defineComponent({
     let blinkCount = 0
 
     onMounted(() => {
+      isMounted.value = true
       const videoElement = document.getElementById('video') as HTMLVideoElement
       const canvasElement = document.getElementById('canvas') as HTMLCanvasElement
       const canvasCtx = canvasElement.getContext('2d') as CanvasRenderingContext2D
@@ -634,13 +658,61 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#video-container {
+.video-container {
   position: relative;
+  width: 300px;
+  height: 400px;
+
+  background: #ffffff;
+  border-radius: 60%;
 }
-#canvas {
+video,
+canvas {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 60%;
+}
+
+#remove-snapshot {
+  display: none;
+}
+
+#message {
+  margin-top: 20px;
+  color: red;
+  font-weight: bold;
+  display: none;
+  animation: blink 1s steps(2, start) infinite;
+}
+
+#snapshot {
+  margin-top: 20px;
+  border: 2px solid #ccc;
+  display: none;
+  border-radius: 60%;
+}
+
+#faceOval {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 300px;
+  height: 350px;
+  border: 2px solid red;
+  border-radius: 60%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
 }
 </style>
 

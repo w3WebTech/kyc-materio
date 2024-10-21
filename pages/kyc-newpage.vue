@@ -376,8 +376,8 @@
           :class="{ active: activeSlide === 8, hidden: activeSlide !== 8 }"
         >
           <div class="slide-1 w-full flex justify-center space-x-4">
-            <VRow class="md:px-60">
-              <!-- <VCol cols="12">EIGHTH STEP</VCol> -->
+            <VRow class="">
+              <VCol cols="12">EIGHTH STEP</VCol>
               <VCol
                 cols="12"
                 md="6"
