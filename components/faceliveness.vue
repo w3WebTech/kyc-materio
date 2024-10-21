@@ -3,7 +3,6 @@
     <div class="row">
       <div class="video-container mb-3">
         <video
-          v-if="isMounted"
           id="video"
           width="800"
           height="1100"
