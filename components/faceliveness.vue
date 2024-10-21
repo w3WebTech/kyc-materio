@@ -388,9 +388,19 @@ export default defineComponent({
     let imageCaptured = false
     let blinkCount = 0
 
-    onMounted(() => {
-      isMounted.value = true
+    onMounted(async () => {
       const videoElement = document.getElementById('video') as HTMLVideoElement
+
+      await requestCameraAccess(videoElement) // Request camera access
+      async function requestCameraAccess(videoElement: HTMLVideoElement) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true })
+          videoElement.srcObject = stream
+        } catch (error) {
+          console.error('Error accessing the camera: ', error)
+        }
+      }
+
       const canvasElement = document.getElementById('canvas') as HTMLCanvasElement
       const canvasCtx = canvasElement.getContext('2d') as CanvasRenderingContext2D
       const message = document.getElementById('message') as HTMLDivElement
