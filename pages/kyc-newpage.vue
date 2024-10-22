@@ -1,10 +1,65 @@
 <template>
-  <div :class="isDarkTheme == true ? 'bg-[#312D4B]' : 'bg-white'">
+  <div v-if="shimmer">
+    <VRow class="w-[80%] mx-auto my-10">
+      <VCol>
+        <VCol cols="12">
+          <div class="shimmer-container">
+            <div class="shimmer-item"></div></div
+        ></VCol>
+        <VCol cols="12">
+          <div class="shimmer-container">
+            <div class="shimmer-item"></div></div
+        ></VCol>
+        <VCol cols="12">
+          <div class="shimmer-container">
+            <div class="shimmer-item"></div></div
+        ></VCol>
+        <VCol cols="12">
+          <div class="shimmer-container">
+            <div class="shimmer-item"></div></div></VCol
+      ></VCol>
+      <VCol>
+        <VCol cols="12">
+          <div class="shimmer-container">
+            <div class="shimmer-item"></div></div
+        ></VCol>
+        <VCol cols="12">
+          <div class="shimmer-container">
+            <div class="shimmer-item"></div></div
+        ></VCol>
+        <VCol cols="12">
+          <div class="shimmer-container">
+            <div class="shimmer-item"></div></div
+        ></VCol>
+        <VCol cols="12">
+          <div class="shimmer-container">
+            <div class="shimmer-item"></div></div></VCol
+      ></VCol>
+
+      <VCol cols="12">
+        <div class="flex justify-between px-3 py-10">
+          <div class="w-24">
+            <div class="shimmer-container">
+              <div class="shimmer-item"></div>
+            </div>
+          </div>
+          <div class="w-24">
+            <div class="shimmer-container">
+              <div class="shimmer-item"></div>
+            </div>
+          </div></div
+      ></VCol>
+    </VRow>
+  </div>
+  <div
+    :class="isDarkTheme == true ? 'bg-[#312D4B]' : 'bg-white'"
+    v-else
+  >
     <div class="mx-auto">
       <div class="slide-container relative">
         <div
           class="slide"
-          :class="{ active: activeSlide === 1, hidden: activeSlide !== 1 }"
+          :class="{ active: activeSlide === 1, hidden: activeSlide !== 1, 'no-slide-out': activeSlide === 1 }"
         >
           <div class="slide-1 w-full flex justify-center space-x-4">
             <VRow class="md:px-40">
@@ -642,10 +697,12 @@ import axios from 'axios'
 import { defineComponent, ref, onMounted } from 'vue'
 // import { FaceMesh } from '@mediapipe/face_mesh'
 import { Camera } from '@mediapipe/camera_utils'
+import confetti from 'canvas-confetti'
 export default defineComponent({
   name: 'Slideshow',
   data() {
     return {
+      shimmer: true,
       activeSlide: 1,
       steps: [],
       pan: [],
@@ -660,34 +717,14 @@ export default defineComponent({
       return vuetifyTheme.global.name.value === 'light' ? false : true
     })
 
-    function createFireworks(): void {
-      const body: HTMLBodyElement = document.body
-      for (let i = 0; i < 40; i++) {
-        const firework: HTMLDivElement = document.createElement('div')
-        firework.classList.add('firework')
-        const size: number = Math.random() * 50 + 10 // Random size between 10px and 60px
-        firework.style.width = `${size}px`
-        firework.style.height = `${size}px`
-        firework.style.position = 'absolute' // Set position to absolute to place correctly
-        firework.style.top = `${Math.random() * 100}vh` // Random vertical position
-        firework.style.left = `${Math.random() * 100}vw` // Random horizontal position
-        body.appendChild(firework)
-        firework.style.display = 'block' // Show the firework
-      }
-
-      // Remove fireworks after 2 seconds
-      setTimeout(() => {
-        const fireworks: NodeListOf<HTMLDivElement> = document.querySelectorAll('.firework')
-        fireworks.forEach(firework => firework.remove())
-      }, 2000)
-    }
-
     return {
       isDarkTheme,
-      createFireworks,
     }
   },
   mounted() {
+    setTimeout(() => {
+      this.shimmer = false // Turn off shimmer after 2 seconds
+    }, 2000)
     const val = this.$route.query.steps ? this.$route.query.steps : '1,2,3,4,5,6,7,8'
     this.steps = val.split(',')
     console.log(val, this.steps, 'this.steps')
@@ -697,9 +734,8 @@ export default defineComponent({
     // } else {
     //   console.error('FaceMesh is not defined')
     // }
-    const startButton = document.getElementById('start-button')
-    if (startButton) {
-      startButton.addEventListener('click', this.createFireworks)
+    if (this.steps.length > 0 && this.steps[this.steps.length - 1] === '8') {
+      this.activeSlide = 1 // Start with the first slide
     }
   },
   methods: {
@@ -716,8 +752,19 @@ export default defineComponent({
       } else if (newIndex >= stepsAsNumbers.length) {
         newIndex = stepsAsNumbers.length - 1
       }
+      if (direction == 1) {
+        confetti({
+          angle: this.randomInRange(360, 360),
+          spread: this.randomInRange(360, 360),
+          particleCount: this.randomInRange(360, 360),
+          origin: { y: 0.6 },
+        })
+      }
 
       this.activeSlide = stepsAsNumbers[newIndex]
+    },
+    randomInRange(min: number, max: number) {
+      return Math.random() * (max - min) + min
     },
     panUpload(file: any) {
       console.log(file, 'file')
@@ -806,21 +853,51 @@ export default defineComponent({
 
 <style lang="scss" >
 @use '@core/scss/pages/page-auth.scss';
-.ticking {
-  animation: tick 0.8s ease-out;
-  animation-fill-mode: forwards;
-  animation-delay: 0.95s;
+.shimmer-container {
+  width: 100%;
+  height: 40px; /* Adjust height as needed */
+  background-color: #f5f5f5;
+  overflow: hidden;
+  border-radius: 5px;
 }
-.tick {
-  stroke-dasharray: 350;
-  stroke-dashoffset: 350;
+
+.shimmer-item {
+  border-radius: 5px;
+  height: 40px;
+  width: 100%;
+  background-color: #e0e0e0;
+  animation: shimmer 1.5s infinite;
 }
-@keyframes tick {
-  from {
-    stroke-dashoffset: 350;
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
   }
-  to {
-    stroke-dashoffset: 0;
+  100% {
+    transform: translateX(100%);
+  }
+}
+@keyframes flip {
+  0% {
+    transform: rotateY(0);
+  }
+  100% {
+    transform: rotateY(-180deg);
+  }
+}
+
+.loader {
+  width: 600px;
+  margin: auto;
+
+  &__image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__coin {
+    animation: flip 0.5s ease-in-out infinite alternate-reverse both;
   }
 }
 .slide-container {
@@ -828,7 +905,13 @@ export default defineComponent({
   height: 450px; /* Adjust as needed */
   overflow: hidden; /* Hide overflowing content */
 }
+.slide.no-slide-out {
+  animation: none; /* Disable the animation */
+}
 
+.slide.active.no-slide-out {
+  animation: none; /* Ensure no animation when activeSlide is 1 */
+}
 .slide {
   position: absolute;
   width: 100%;
@@ -864,61 +947,5 @@ export default defineComponent({
   100% {
     transform: translateX(0);
   }
-}
-
-@keyframes firework {
-  0% {
-    transform: translate(-50%, 60vh);
-    width: 10px; /* Fixed size */
-    height: 10px; /* Fixed size */
-    opacity: 1;
-  }
-  50% {
-    width: 10px; /* Fixed size */
-    height: 10px; /* Fixed size */
-    opacity: 1;
-  }
-  100% {
-    width: 100px; /* Explode to larger size */
-    height: 100px; /* Explode to larger size */
-    opacity: 0;
-  }
-}
-
-.firework,
-.firework::before,
-.firework::after {
-  --top: 60vh;
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 10px; /* Fixed size */
-  height: 10px; /* Fixed size */
-  background: radial-gradient(circle, #ff0 0.5px, #ff0 0) 50% 0%,
-    radial-gradient(circle, #ff0000f8 0.5px, #ff3c00 0) 0% 50%,
-    radial-gradient(circle, rgb(98, 0, 255) 0.5px, rgb(98, 0, 255) 0) 50% 99%,
-    radial-gradient(circle, rgb(255, 0, 170) 0.5px, rgb(255, 0, 170) 0) 99% 50%,
-    radial-gradient(circle, rgb(0, 204, 255) 0.5px, rgb(0, 204, 255) 0) 80% 90%,
-    radial-gradient(circle, rgb(255, 0, 0) 0.5px, rgb(255, 0, 0) 0) 95% 90%,
-    radial-gradient(circle, rgba(255, 0, 212, 0.911) 0.5px, #ff0 0) 10% 60%,
-    radial-gradient(circle, rgb(255, 123, 0) 0.5px, rgb(255, 123, 0) 0) 31% 80%,
-    radial-gradient(circle, rgb(0, 255, 76) 0.5px, rgb(0, 255, 76) 0) 80% 10%,
-    radial-gradient(circle, rgb(0, 26, 255) 0.5px, rgb(0, 26, 255) 0) 90% 23%,
-    radial-gradient(circle, rgb(195, 0, 255) 0.5px, rgb(195, 0, 255) 0) 45% 20%,
-    radial-gradient(circle, rgb(0, 255, 0) 0.5px, rgb(23, 196, 158) 0) 13% 24%;
-  background-size: 5px 5px; /* Keep background size consistent */
-  background-repeat: no-repeat;
-  animation: firework 2s infinite;
-  display: none; /* Initially hidden */
-}
-
-.firework::before {
-  transform: translate(-50%, -50%) rotate(2deg) !important;
-}
-
-.firework::after {
-  transform: translate(-50%, -50%) rotate(-40deg) !important;
 }
 </style>
