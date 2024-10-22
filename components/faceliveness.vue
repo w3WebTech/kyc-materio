@@ -64,7 +64,7 @@ export default defineComponent({
       script.async = true
 
       script.onload = async () => {
-        alert('Mediapipe Face Mesh loaded')
+        console.log('Mediapipe Face Mesh loaded')
         isMounted.value = true // Set the component as mounted
 
         videoElement = document.getElementById('video') as HTMLVideoElement
@@ -105,14 +105,14 @@ export default defineComponent({
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true })
         videoElement.srcObject = stream
-        alert('Camera access granted')
+        console.log('Camera access granted')
       } catch (error) {
         console.error('Error accessing the camera: ', error)
-        alert('Camera access is required to use this feature.')
+        console.log('Camera access is required to use this feature.')
       }
     }
     function onResults(results: FaceMeshResults) {
-      alert('onResults')
+      console.log('onResults')
       if (imageCaptured) return
 
       canvasCtx.save()
@@ -335,9 +335,9 @@ export default defineComponent({
     }
 
     function logResults(landmarks: Landmark[]) {
-      alert('Landmarks:')
+      console.log('Landmarks:')
       for (let i = 0; i < landmarks.length; i++) {
-        alert(`Point ${i}:`, landmarks[i].x * canvasElement.width, landmarks[i].y * canvasElement.height)
+        console.log(`Point ${i}:`, landmarks[i].x * canvasElement.width, landmarks[i].y * canvasElement.height)
       }
     }
 
@@ -354,7 +354,7 @@ export default defineComponent({
       const dataUrl = snapshotCanvas.toDataURL('image/png')
       snapshot.src = dataUrl // Set the src of the snapshot image
       snapshot.style.display = 'block' // Show the snapshot image
-      alert('Image captured') // Remove the data URL alert for better user experience
+      console.log('Image captured') // Remove the data URL console.log for better user experience
     }
   },
 })
@@ -486,7 +486,7 @@ export default defineComponent({
       script.async = true
 
       script.onload = async () => {
-        alert('Mediapipe Face Mesh loaded')
+        console.log('Mediapipe Face Mesh loaded')
         isMounted.value = true // Set the component as mounted
 
         videoElement = document.getElementById('video') as HTMLVideoElement
@@ -507,7 +507,7 @@ export default defineComponent({
           minDetectionConfidence: 0.5,
           minTrackingConfidence: 0.5,
         })
-        alert(faceMesh.maxNumFaces)
+        console.log(JSON.stringify(faceMesh))
         faceMesh.onResults(onResults)
 
         const camera = new Camera(videoElement, {
@@ -527,16 +527,16 @@ export default defineComponent({
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true })
         videoElement.srcObject = stream
-        alert('Camera access granted')
+        console.log('Camera access granted')
       } catch (error) {
         console.error('Error accessing the camera: ', error)
-        alert('Camera access is required to use this feature.')
+        console.log('Camera access is required to use this feature.')
       }
     }
 
     function onResults(results: FaceMeshResults) {
       if (imageCaptured) return
-      alert('onResults')
+      console.log('onResults')
       canvasCtx.save()
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height)
@@ -556,11 +556,11 @@ export default defineComponent({
           // Check conditions for capturing image
           const areLinesPerpendicular = checkPerpendicularLines(canvasCtx, landmarks)
           const isFaceSizeCorrect = checkFaceSize(landmarks)
-          alert(areLinesPerpendicular)
+          console.log(areLinesPerpendicular)
           if (isFaceSizeCorrect && areLinesPerpendicular) {
-            alert('before blinck')
+            console.log('before blinck')
             if (blinkCount >= 2) {
-              alert('after blinck')
+              console.log('after blinck')
               captureImage()
               imageCaptured = true
             } else {
@@ -588,7 +588,7 @@ export default defineComponent({
     }
 
     function checkPerpendicularLines(ctx: CanvasRenderingContext2D, landmarks: Landmark[]) {
-      alert('checkPerpendicularLines')
+      console.log('checkPerpendicularLines')
       // Define landmarks for the lines
       const leftEye = landmarks[33] // Left eye outer corner
       const rightEye = landmarks[263] // Right eye outer corner
@@ -641,7 +641,7 @@ export default defineComponent({
     }
 
     function checkFaceSize(landmarks: Landmark[]) {
-      alert('checkFaceSize')
+      console.log('checkFaceSize')
       const topOfForehead = landmarks[10]
       const bottomOfChin = landmarks[152]
 
@@ -664,13 +664,13 @@ export default defineComponent({
       // Get the data URL and set it as the source for the snapshot image
       const dataUrl = snapshotCanvas.toDataURL('image/png')
       snapshot.src = dataUrl
-      alert('dataUrl', dataUrl)
+      console.log('dataUrl', dataUrl)
       setTimeout(() => {
         document.getElementById('video-container').style.display = 'none'
         snapshot.style.display = 'block' // Show the snapshot image
       }, 100) // Adjust the delay as needed (100ms here)
 
-      alert('Image captured')
+      console.log('Image captured')
     }
   },
 })

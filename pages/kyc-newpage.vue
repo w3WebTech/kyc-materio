@@ -60,16 +60,71 @@
           <div class="slide-1 w-full flex justify-center space-x-4">
             <VRow class="md:px-40">
               <VCol cols="12">SECOND STEP</VCol>
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  placeholder="John"
-                  label="Name *"
-                  id="name"
-                />
-              </VCol>
+              <VRow>
+                <VCol cols="9">
+                  <VFileInput
+                    label="File input"
+                    v-model="pan"
+                    @input="handleFileChange"
+                /></VCol>
+                <VCol cols="3">
+                  <!-- <div v-if="panResponse.length">
+                  <div
+                    v-for="(item, index) in panResponse"
+                    :key="index"
+                  >
+                    {{ item }}
+                  </div>
+                </div> -->
+                  <!-- <div v-else> -->
+
+                  <div
+                    v-if="loader"
+                    class="text-xs mr-2"
+                  >
+                    <VBtn height="45">
+                      Loading
+                      <VProgressCircular
+                        indeterminate
+                        color="white"
+                        :size="18"
+                      />
+                    </VBtn>
+                  </div>
+                  <div
+                    v-if="tick"
+                    class="text-xs mr-2"
+                  >
+                    <VBtn height="45">
+                      Done
+                      <VIcon
+                        end
+                        icon="ri-check-line"
+                        class="font-bold"
+                        size="20"
+                      />
+                    </VBtn>
+                  </div>
+                  <div
+                    v-if="!loader && !tick"
+                    class="text-xs mr-2"
+                  >
+                    <VBtn
+                      @click="panUpload(pan)"
+                      height="45"
+                    >
+                      Upload
+                      <VIcon
+                        end
+                        icon="ri-upload-cloud-line"
+                      />
+                    </VBtn>
+                  </div>
+                  <!-- <div v-else><VBtn @click="panUpload(pan)">Get Data</VBtn></div> -->
+                  <!-- </div> -->
+                </VCol>
+              </VRow>
+
               <VCol
                 cols="12"
                 md="6"
@@ -383,7 +438,50 @@
                 md="6"
                 class=""
               >
-                <faceliveness />
+                <VRow class="md:px-40">
+                  <VCol cols="12">SIXTH STEP</VCol>
+                  <VCol
+                    cols="12"
+                    md="6"
+                  >
+                    <VTextField
+                      placeholder="John"
+                      label="Name *"
+                      id="name"
+                    />
+                  </VCol>
+                  <VCol
+                    cols="12"
+                    md="6"
+                  >
+                    <VTextField
+                      placeholder="Johncy"
+                      label="Mothers Name *"
+                      id="name"
+                    />
+                  </VCol>
+                  <VCol
+                    cols="12"
+                    md="6"
+                  >
+                    <VTextField
+                      placeholder="Johny"
+                      label="Fathers Name *"
+                      id="name"
+                    />
+                  </VCol>
+                  <VCol
+                    cols="12"
+                    md="6"
+                  >
+                    <VTextField
+                      placeholder="9876543210"
+                      label="Phone *"
+                      type="number"
+                    />
+                  </VCol>
+                </VRow>
+                <!-- <faceliveness /> -->
               </VCol>
             </VRow>
           </div>
@@ -540,7 +638,7 @@
 
 <script lang="ts">
 import { useTheme } from 'vuetify'
-
+import axios from 'axios'
 import { defineComponent, ref, onMounted } from 'vue'
 // import { FaceMesh } from '@mediapipe/face_mesh'
 import { Camera } from '@mediapipe/camera_utils'
@@ -550,6 +648,10 @@ export default defineComponent({
     return {
       activeSlide: 1,
       steps: [],
+      pan: [],
+      panResponse: ref([]),
+      loader: false,
+      tick: false,
     }
   },
   setup() {
@@ -558,7 +660,6 @@ export default defineComponent({
       return vuetifyTheme.global.name.value === 'light' ? false : true
     })
 
-    // Function to create fireworks
     function createFireworks(): void {
       const body: HTMLBodyElement = document.body
       for (let i = 0; i < 40; i++) {
@@ -618,13 +719,110 @@ export default defineComponent({
 
       this.activeSlide = stepsAsNumbers[newIndex]
     },
+    panUpload(file: any) {
+      console.log(file, 'file')
+      if (file && file.length > 0 && file[0] instanceof File) {
+        const uploadedFile = file[0]
+        // Create a FileReader object
+        const reader = new FileReader()
+
+        // Set up the onload event to process the file once it's read
+        reader.onload = event => {
+          // Get the Base64 string from the result
+          const fileData = event.target.result
+          const base64_data = fileData.split(',')[1]
+          // Extract the file name
+          const fileName = uploadedFile.name
+
+          // Log the file name and Base64 file data
+          console.log(fileName, base64_data)
+
+          // Call fetchData with the file name and data
+          this.fetchData(fileName, base64_data)
+        }
+
+        // Read the file as a data URL (Base64)
+        reader.readAsDataURL(uploadedFile)
+      } else {
+        console.error('Invalid file provided')
+      }
+    },
+    fetchData(file, fileData) {
+      this.loader = true
+      const data = {
+        fileName: file,
+        pan: true,
+        file_data: fileData,
+      }
+      const params = new URLSearchParams()
+      Object.keys(data).forEach(key => {
+        params.append(key, data[key])
+      })
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+
+      axios
+        .post('https://gkyc.gwcindia.in/web-ocr/api-ocr-documents.php', params, config)
+        .then(response => {
+          this.loader = false
+          this.tick = true
+          this.panResponse.value = response.data
+          console.log('Updated panResponse:', this.panResponse)
+        })
+        .catch(error => {
+          console.error('Error:', error)
+        })
+    },
+    handleFileChange() {
+      debugger
+      if (!this.pan || this.pan.length === 0) {
+        // Reset loader and tick states
+        this.loader = false
+        this.tick = false
+
+        // Perform any additional actions here
+        console.log('File input cleared')
+      }
+    },
+  },
+  watch: {
+    pan(newValue) {
+      if (!newValue || newValue.length === 0) {
+        // Reset loader and tick states
+        this.loader = false
+        this.tick = false
+
+        // Perform any additional actions here
+        console.log('File input cleared')
+      }
+    },
   },
 })
 </script>
 
 <style lang="scss" >
 @use '@core/scss/pages/page-auth.scss';
-
+.ticking {
+  animation: tick 0.8s ease-out;
+  animation-fill-mode: forwards;
+  animation-delay: 0.95s;
+}
+.tick {
+  stroke-dasharray: 350;
+  stroke-dashoffset: 350;
+}
+@keyframes tick {
+  from {
+    stroke-dashoffset: 350;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
 .slide-container {
   position: relative;
   height: 450px; /* Adjust as needed */
