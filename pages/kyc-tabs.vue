@@ -1698,10 +1698,7 @@ label input[type='radio']:checked + span {
                   </div>
                 </VCard>
               </VCol>
-              <VCol
-                cols="12"
-                md="4"
-              >
+              <VCol cols="12">
                 <VCard>
                   <div
                     v-if="!avatar2"

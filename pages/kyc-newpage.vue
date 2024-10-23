@@ -115,211 +115,213 @@
           <div class="slide-1 w-full flex justify-center space-x-4">
             <VRow class="md:px-40">
               <VCol cols="12">SECOND STEP</VCol>
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VRow>
-                  <VCol cols="9">
-                    <VFileInput
-                      label="Pan Upload"
-                      v-model="pan"
-                      @input="handleFileChange"
-                  /></VCol>
-                  <VCol cols="3">
-                    <!-- <div v-if="panResponse.length">
-                  <div
-                    v-for="(item, index) in panResponse"
-                    :key="index"
-                  >
-                    {{ item }}
-                  </div>
-                </div> -->
-                    <!-- <div v-else> -->
-
-                    <div
-                      v-if="loader"
-                      class="text-xs mr-2"
-                    >
-                      <VBtn height="45">
-                        Loading
-                        <VProgressCircular
-                          indeterminate
-                          color="white"
-                          :size="18"
-                        />
-                      </VBtn>
-                    </div>
-                    <div
-                      v-if="tick"
-                      class="text-xs mr-2"
-                    >
-                      <VBtn height="45">
-                        Done
-                        <VIcon
-                          end
-                          icon="ri-check-line"
-                          class="font-bold"
-                          size="20"
-                        />
-                      </VBtn>
-                    </div>
-                    <div
-                      v-if="!loader && !tick"
-                      class="text-xs mr-2"
-                    >
-                      <VBtn
-                        @click="panUpload(pan)"
-                        height="45"
-                      >
-                        Upload
-                        <VIcon
-                          end
-                          icon="ri-upload-cloud-line"
-                        />
-                      </VBtn>
-                    </div>
-                    <!-- <div v-else><VBtn @click="panUpload(pan)">Get Data</VBtn></div> -->
-                    <!-- </div> -->
-                  </VCol>
-                </VRow>
-              </VCol>
 
               <VCol
                 cols="12"
                 md="6"
               >
-                <VRow>
-                  <VCol cols="9">
-                    <VFileInput
-                      label="Adhar Upload"
-                      v-model="adhar"
-                  /></VCol>
-                  <VCol cols="3">
-                    <!-- <div v-if="panResponse.length">
+                <VCard>
                   <div
-                    v-for="(item, index) in panResponse"
-                    :key="index"
+                    v-if="!avatar2"
+                    class="p-5 py-2"
                   >
-                    {{ item }}
+                    <VFileInput
+                      v-model="avatar2"
+                      :rules="rules"
+                      label="ADHAR PROOF"
+                      placeholder="Pick a Proof"
+                      prepend-icon="ri-attachment-line"
+                      @update:model-value="handleAvatarUpdate2"
+                    />
                   </div>
-                </div> -->
-                    <!-- <div v-else> -->
-
-                    <div
-                      v-if="loader1"
-                      class="text-xs mr-2"
-                    >
-                      <VBtn height="45">
-                        Loading
-                        <VProgressCircular
-                          indeterminate
-                          color="white"
-                          :size="18"
-                        />
-                      </VBtn>
+                  <div
+                    v-if="avatar2 && eppdfname"
+                    class="relative"
+                  >
+                    <div class="">
+                      <!-- <object
+                        :data="imageUrl1"
+                        type="application/pdf"
+                        width="100%"
+                        height="400"
+                      /> -->
+                      <div class="flex py-4 justify-between px-2 pt-5">
+                        <div class="px-6 pt-1 text-blue-700">{{ eppdfname }}</div>
+                        <div class="flex">
+                          <div
+                            class="bg-blue-500 rounded-md items-center justify-center px-2 py-1 mx-2"
+                            @click="isEpDialogVisible = true"
+                          >
+                            <VIcon
+                              icon="ri-eye-fill"
+                              color="white"
+                              size="18"
+                            />
+                          </div>
+                          <div
+                            class="bg-red-500 rounded-md items-center justify-center px-2 py-1"
+                            @click="handleAvatarUpdate2(null)"
+                          >
+                            <VIcon
+                              icon="ri-delete-bin-4-fill"
+                              color="white"
+                              size="18"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div
-                      v-if="tick1"
-                      class="text-xs mr-2"
-                    >
-                      <VBtn height="45">
-                        Done
-                        <VIcon
-                          end
-                          icon="ri-check-line"
-                          class="font-bold"
-                          size="20"
-                        />
-                      </VBtn>
+                  </div>
+                  <div v-if="avatar2 && !eppdfname">
+                    <div class="py-4 px-2 pt-5 flex justify-center">
+                      <VProgressCircular
+                        :size="20"
+                        width="3"
+                        color="primary"
+                        indeterminate
+                      />
+                      <div class="px-4 animate-charcter">LOADING ..</div>
                     </div>
-                    <div
-                      v-if="!loader1 && !tick1"
-                      class="text-xs mr-2"
-                    >
-                      <VBtn
-                        @click="adharUpload(adhar)"
-                        height="45"
-                      >
-                        Upload
-                        <VIcon
-                          end
-                          icon="ri-upload-cloud-line"
-                        />
-                      </VBtn>
-                    </div>
-                    <!-- <div v-else><VBtn @click="panUpload(pan)">Get Data</VBtn></div> -->
-                    <!-- </div> -->
-                  </VCol>
-                </VRow>
+                  </div>
+                </VCard>
               </VCol>
               <VCol
                 cols="12"
                 md="6"
               >
-                <VRow>
-                  <VCol cols="9">
-                    <VFileInput
-                      label="Bank Proof"
-                      v-model="bank"
-                  /></VCol>
-                  <VCol cols="3">
-                    <!-- <div v-if="panResponse.length">
+                <VCard>
                   <div
-                    v-for="(item, index) in panResponse"
-                    :key="index"
+                    v-if="!avatar1"
+                    class="p-5 py-2"
                   >
-                    {{ item }}
+                    <VFileInput
+                      v-model="avatar1"
+                      :rules="rules"
+                      label="PAN PROOF"
+                      placeholder="Pick a Proof"
+                      prepend-icon="ri-attachment-line"
+                      @update:model-value="handleAvatarUpdate1"
+                    />
                   </div>
-                </div> -->
-                    <!-- <div v-else> -->
-
-                    <div
-                      v-if="loader2"
-                      class="text-xs mr-2"
-                    >
-                      <VBtn height="45">
-                        Loading
-                        <VProgressCircular
-                          indeterminate
-                          color="white"
-                          :size="18"
-                        />
-                      </VBtn>
+                  <div
+                    v-if="avatar1 && panpdfname"
+                    class="relative"
+                  >
+                    <div class="">
+                      <!-- <object
+                        :data="imageUrl1"
+                        type="application/pdf"
+                        width="100%"
+                        height="400"
+                      /> -->
+                      <div class="flex py-4 justify-between px-2 pt-5">
+                        <div class="px-6 pt-1 text-blue-700">{{ panpdfname }}</div>
+                        <div class="flex">
+                          <div
+                            class="bg-blue-500 rounded-md items-center justify-center px-2 py-1 mx-2"
+                            @click="isPanDialogVisible = true"
+                          >
+                            <VIcon
+                              icon="ri-eye-fill"
+                              color="white"
+                              size="18"
+                            />
+                          </div>
+                          <div
+                            class="bg-red-500 rounded-md items-center justify-center px-2 py-1"
+                            @click="handleAvatarUpdate1(null)"
+                          >
+                            <VIcon
+                              icon="ri-delete-bin-4-fill"
+                              color="white"
+                              size="18"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div
-                      v-if="tick2"
-                      class="text-xs mr-2"
-                    >
-                      <VBtn height="45">
-                        Done
-                        <VIcon
-                          end
-                          icon="ri-check-line"
-                          class="font-bold"
-                          size="20"
-                        />
-                      </VBtn>
+                  </div>
+                  <div v-if="avatar1 && !panpdfname">
+                    <div class="py-4 px-2 pt-5 flex justify-center">
+                      <VProgressCircular
+                        :size="20"
+                        width="3"
+                        color="primary"
+                        indeterminate
+                      />
+                      <div class="px-4 animate-charcter">LOADING ..</div>
                     </div>
-                    <div
-                      v-if="!loader2 && !tick2"
-                      class="text-xs mr-2"
-                    >
-                      <VBtn
-                        @click="bankUpload(bank)"
-                        height="45"
-                      >
-                        Upload
-                        <VIcon
-                          end
-                          icon="ri-upload-cloud-line"
-                        />
-                      </VBtn>
+                  </div>
+                </VCard>
+              </VCol>
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VCard>
+                  <div
+                    v-if="!avatar3"
+                    class="p-5 py-2"
+                  >
+                    <VFileInput
+                      v-model="avatar3"
+                      :rules="rules"
+                      label="BANK PROOF"
+                      placeholder="Pick a Proof"
+                      prepend-icon="ri-attachment-line"
+                      @update:model-value="handleAvatarUpdate3"
+                    />
+                  </div>
+                  <div
+                    v-if="avatar3 && bankname"
+                    class="relative"
+                  >
+                    <div class="">
+                      <!-- <object
+                        :data="imageUrl1"
+                        type="application/pdf"
+                        width="100%"
+                        height="400"
+                      /> -->
+                      <div class="flex py-4 justify-between px-2 pt-5">
+                        <div class="px-6 pt-1 text-blue-700">{{ bankname }}</div>
+                        <div class="flex">
+                          <div
+                            class="bg-blue-500 rounded-md items-center justify-center px-2 py-1 mx-2"
+                            @click="isDialogVisible = true"
+                          >
+                            <VIcon
+                              icon="ri-eye-fill"
+                              color="white"
+                              size="18"
+                            />
+                          </div>
+                          <div
+                            class="bg-red-500 rounded-md items-center justify-center px-2 py-1"
+                            @click="handleAvatarUpdate3(null)"
+                          >
+                            <VIcon
+                              icon="ri-delete-bin-4-fill"
+                              color="white"
+                              size="18"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <!-- <div v-else><VBtn @click="panUpload(pan)">Get Data</VBtn></div> -->
-                    <!-- </div> -->
-                  </VCol>
-                </VRow>
+                  </div>
+                  <div v-if="avatar3 && !bankname">
+                    <div class="py-4 px-2 pt-5 flex justify-center">
+                      <VProgressCircular
+                        :size="20"
+                        width="3"
+                        color="primary"
+                        indeterminate
+                      />
+                      <div class="px-4 animate-charcter">LOADING ..</div>
+                    </div>
+                  </div>
+                </VCard>
               </VCol>
             </VRow>
             <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio quo a fuga nobis autem ducimus architecto
@@ -800,6 +802,60 @@
       </div>
     </div>
   </div>
+  <VDialog
+    v-model="isEpDialogVisible"
+    width="500"
+  >
+    <VCard>
+      <VCardText
+        ><div class="">
+          <div>
+            <object
+              :data="imageUrl1"
+              type="application/pdf"
+              width="100%"
+              height="600"
+            />
+          </div></div
+      ></VCardText>
+    </VCard>
+  </VDialog>
+  <VDialog
+    v-model="isDialogVisible"
+    width="500"
+  >
+    <VCard>
+      <VCardText
+        ><div class="flex justify-center items-center mx-auto my-auto">
+          <div>
+            <object
+              :data="imageUrl3"
+              type="application/pdf"
+              width="100%"
+              height="400"
+            />
+          </div></div
+      ></VCardText>
+    </VCard>
+  </VDialog>
+  <VDialog
+    v-model="isPanDialogVisible"
+    width="500"
+  >
+    <VCard>
+      <VCardText
+        ><div class="">
+          <div>
+            <object
+              :data="imageUrl2"
+              type="application/pdf"
+              width="100%"
+              height="600"
+            />
+          </div></div
+      ></VCardText>
+    </VCard>
+  </VDialog>
 </template>
 
 <script lang="ts">
@@ -809,11 +865,15 @@ import { defineComponent, ref, onMounted } from 'vue'
 // import { FaceMesh } from '@mediapipe/face_mesh'
 import { Camera } from '@mediapipe/camera_utils'
 import confetti from 'canvas-confetti'
+
 export default defineComponent({
   name: 'Slideshow',
   data() {
     return {
-      shimmer: true,
+      isEpDialogVisible: false,
+      isDialogVisible: false,
+      isPanDialogVisible: false,
+      shimmer: false,
       activeSlide: 1,
       steps: [],
       pan: [],
@@ -826,6 +886,15 @@ export default defineComponent({
       adhar: [],
       loader2: false,
       tick2: false,
+      avatar2: null,
+      imageUrl2: null,
+      avatar1: null,
+      imageUrl1: null,
+      avatar3: null,
+      imageUrl3: null,
+      eppdfname: null,
+      panpdfname: null,
+      bankname: null,
     }
   },
   setup() {
@@ -839,21 +908,17 @@ export default defineComponent({
     }
   },
   mounted() {
-    setTimeout(() => {
-      this.shimmer = false // Turn off shimmer after 2 seconds
-    }, 2000)
+    // setTimeout(() => {
+    //   this.shimmer = false // Turn off shimmer after 2 seconds
+    // }, 2000)
+
     const val = this.$route.query.steps ? this.$route.query.steps : '1,2,3,4,5,6,7,8'
     this.steps = val.split(',')
     console.log(val, this.steps, 'this.steps')
-    // if (FaceMesh) {
-    //   const faceMesh = new FaceMesh()
-    //   // Your initialization code here...
-    // } else {
-    //   console.error('FaceMesh is not defined')
+
+    // if (this.steps.length > 0 && this.steps[this.steps.length - 1] === '8') {
+    //   this.activeSlide = 1
     // }
-    if (this.steps.length > 0 && this.steps[this.steps.length - 1] === '8') {
-      this.activeSlide = 1 // Start with the first slide
-    }
   },
   methods: {
     setSlide(id: number) {
@@ -870,12 +935,13 @@ export default defineComponent({
         newIndex = stepsAsNumbers.length - 1
       }
       if (direction == 1) {
-        confetti({
-          angle: this.randomInRange(360, 360),
-          spread: this.randomInRange(360, 360),
-          particleCount: this.randomInRange(360, 360),
-          origin: { y: 0.6 },
-        })
+        // confetti({
+        //   angle: this.randomInRange(360, 360),
+        //   spread: this.randomInRange(360, 360),
+        //   particleCount: this.randomInRange(360, 360),
+        //   origin: { y: 0.6 },
+        // })
+        confetti({ particleCount: 300, spread: 180, origin: { y: 0.7 } })
       }
 
       this.activeSlide = stepsAsNumbers[newIndex]
@@ -967,7 +1033,7 @@ export default defineComponent({
         console.error('Invalid file provided')
       }
     },
-    fetchPanData(file, fileData) {
+    fetchPanData(file, fileData, newAvatar) {
       this.loader = true
       const data = {
         fileName: file,
@@ -990,19 +1056,37 @@ export default defineComponent({
         .then(response => {
           this.loader = false
           this.tick = true
-          this.panResponse.value = response.data
-          console.log('Updated panResponse:', this.panResponse)
+          // if (response && response.status) {
+          //   this.imageUrl2 = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+          //   this.panpdfname = newAvatar ? newAvatar[0].name : null
+          //   console.log('Updated panResponse aadhar:', response)
+          // }
+          if (response && response.data && response.data.status === 'ok') {
+            const uid = response.data.panOcrData.error
+            if (!uid) {
+              this.imageUrl2 = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+              this.panpdfname = newAvatar ? newAvatar[0].name : null
+              console.log('Updated panResponse aadhar:', response)
+            } else {
+              this.avatar2 = null
+
+              this.handleAvatarUpdate1(null)
+              alert('Invalid Pan Proof !,Please Update Valid One !!!')
+            }
+          } else {
+            alert('Error in response data')
+          }
         })
         .catch(error => {
           console.error('Error:', error)
         })
     },
-    fetchAdharData(fileName, fileData) {
+    fetchAdharData(fileName, fileData, newAvatar) {
       this.loader1 = true
       const data = {
         aadhaar: true,
-        aadhaarF_Name: fileName,
-        aadhaarF_Data: fileData,
+        aadhaarF_name: fileName,
+        aadhaarF_data: fileData,
         aadhaarB_Name: '',
         aadhaarB_Data: '',
       }
@@ -1020,17 +1104,31 @@ export default defineComponent({
       axios
         .post('https://gkyc.gwcindia.in/web-ocr/api-ocr-documents.php', params, config)
         .then(response => {
-          this.loader1 = false
-          this.tick1 = true
+          // this.loader1 = false
+          // this.tick1 = true
+          this.loader1 = false // Hide loader after response
+          if (response && response.data && response.data.status === 'ok') {
+            const uid = response.data.aadhaarData.response.result.uid
+            if (uid) {
+              this.imageUrl1 = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+              this.eppdfname = newAvatar ? newAvatar[0].name : null
+              console.log('Updated panResponse aadhar:', response)
+            } else {
+              this.avatar1 = null
 
-          console.log('Updated panResponse aadhar:', response)
+              this.handleAvatarUpdate2(null)
+              alert('Invalid Adhar Proof !,Please Update Valid One !!!')
+            }
+          } else {
+            alert('Error in response data')
+          }
         })
         .catch(error => {
           console.error('Error:', error)
         })
     },
-    fetchBankData(fileName, fileData) {
-      this.loader2 = true
+    fetchBankData(fileName, fileData, newAvatar) {
+      // this.loader3 = true
       const data = {
         bank: true,
         fileName: fileName,
@@ -1050,14 +1148,42 @@ export default defineComponent({
       axios
         .post('https://gkyc.gwcindia.in/web-ocr/api-ocr-documents.php', params, config)
         .then(response => {
-          this.loader2 = false
-          this.tick2 = true
+          // this.loader2 = false
+          // this.tick2 = true
+          // if (response && response.status) {
+          //   this.imageUrl3 = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+          //   this.bankname = newAvatar ? newAvatar[0].name : null
+          //   console.log('Updated panResponse aadhar:', response)
+          // }
+          if (response && response.data && response.data.status === 'ok') {
+            const uid = this.getAccountNo(response.data.data.result)
 
-          console.log('Updated panResponse aadhar:', response)
+            console.log(uid, 'uid')
+            if (uid != '') {
+              this.imageUrl3 = newAvatar ? URL.createObjectURL(newAvatar[0]) : null
+              this.bankname = newAvatar ? newAvatar[0].name : null
+              console.log('Updated panResponse aadhar:', response)
+            } else {
+              this.avatar3 = null
+
+              this.handleAvatarUpdate3(null)
+              alert('Invalid Adhar Proof !,Please Update Valid One !!!')
+            }
+          } else {
+            alert('Error in response data')
+          }
         })
         .catch(error => {
           console.error('Error:', error)
         })
+    },
+    getAccountNo(obj) {
+      for (let key in obj) {
+        if (key === 'Account No') {
+          return obj[key] // Return the value associated with "Account No"
+        }
+      }
+      return null // Return null if not found
     },
     handleFileChange() {
       debugger
@@ -1068,6 +1194,93 @@ export default defineComponent({
 
         // Perform any additional actions here
         console.log('File input cleared')
+      }
+    },
+    handleAvatarUpdate2(newAvatar) {
+      console.log(newAvatar, 'newAvatar')
+      this.avatar2 = newAvatar
+      if (newAvatar && newAvatar.length > 0 && newAvatar[0] instanceof File) {
+        const uploadedFile = newAvatar[0]
+        // Create a FileReader object
+        const reader = new FileReader()
+
+        // Set up the onload event to process the file once it's read
+        reader.onload = event => {
+          // Get the Base64 string from the result
+          const fileData = event.target.result
+          const base64_data = fileData.split(',')[1]
+          // Extract the file name
+          const fileName = uploadedFile.name
+
+          // Log the file name and Base64 file data
+          console.log(fileName, base64_data)
+
+          // Call fetchData with the file name and data
+          if (fileName != null && fileName != '') {
+            this.fetchAdharData(fileName, base64_data, newAvatar)
+          }
+        }
+
+        // Read the file as a data URL (Base64)
+        reader.readAsDataURL(uploadedFile)
+      }
+    },
+    handleAvatarUpdate1(newAvatar) {
+      console.log(newAvatar, 'newAvatar')
+      this.avatar1 = newAvatar
+      if (newAvatar && newAvatar.length > 0 && newAvatar[0] instanceof File) {
+        const uploadedFile = newAvatar[0]
+        // Create a FileReader object
+        const reader = new FileReader()
+
+        // Set up the onload event to process the file once it's read
+        reader.onload = event => {
+          // Get the Base64 string from the result
+          const fileData = event.target.result
+          const base64_data = fileData.split(',')[1]
+          // Extract the file name
+          const fileName = uploadedFile.name
+
+          // Log the file name and Base64 file data
+          console.log(fileName, base64_data)
+
+          // Call fetchData with the file name and data
+          if (fileName != null && fileName != '') {
+            this.fetchPanData(fileName, base64_data, newAvatar)
+          }
+        }
+
+        // Read the file as a data URL (Base64)
+        reader.readAsDataURL(uploadedFile)
+      }
+    },
+    handleAvatarUpdate3(newAvatar) {
+      console.log(newAvatar, 'newAvatar')
+      this.avatar3 = newAvatar
+      if (newAvatar && newAvatar.length > 0 && newAvatar[0] instanceof File) {
+        const uploadedFile = newAvatar[0]
+        // Create a FileReader object
+        const reader = new FileReader()
+
+        // Set up the onload event to process the file once it's read
+        reader.onload = event => {
+          // Get the Base64 string from the result
+          const fileData = event.target.result
+          const base64_data = fileData.split(',')[1]
+          // Extract the file name
+          const fileName = uploadedFile.name
+
+          // Log the file name and Base64 file data
+          console.log(fileName, base64_data)
+
+          // Call fetchData with the file name and data
+          if (fileName != null && fileName != '') {
+            this.fetchBankData(fileName, base64_data, newAvatar)
+          }
+        }
+
+        // Read the file as a data URL (Base64)
+        reader.readAsDataURL(uploadedFile)
       }
     },
   },
@@ -1088,6 +1301,34 @@ export default defineComponent({
 
 <style lang="scss" >
 @use '@core/scss/pages/page-auth.scss';
+.animate-charcter {
+  text-transform: uppercase;
+  background-image: linear-gradient(-225deg, #231557 0%, #44107a 29%, #ff1361 67%, #fff800 100%);
+
+  background-clip: border-box;
+
+  color: #fff;
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 0.5s linear infinite;
+  display: inline-block;
+  animation: blinker 0.5s linear infinite;
+}
+@keyframes blinker {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes textclip {
+  to {
+    background-position: 200% center;
+  }
+}
 .shimmer-container {
   width: 100%;
   height: 40px; /* Adjust height as needed */
