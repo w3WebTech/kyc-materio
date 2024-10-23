@@ -115,15 +115,19 @@
           <div class="slide-1 w-full flex justify-center space-x-4">
             <VRow class="md:px-40">
               <VCol cols="12">SECOND STEP</VCol>
-              <VRow>
-                <VCol cols="9">
-                  <VFileInput
-                    label="File input"
-                    v-model="pan"
-                    @input="handleFileChange"
-                /></VCol>
-                <VCol cols="3">
-                  <!-- <div v-if="panResponse.length">
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VRow>
+                  <VCol cols="9">
+                    <VFileInput
+                      label="Pan Upload"
+                      v-model="pan"
+                      @input="handleFileChange"
+                  /></VCol>
+                  <VCol cols="3">
+                    <!-- <div v-if="panResponse.length">
                   <div
                     v-for="(item, index) in panResponse"
                     :key="index"
@@ -131,84 +135,191 @@
                     {{ item }}
                   </div>
                 </div> -->
-                  <!-- <div v-else> -->
+                    <!-- <div v-else> -->
 
-                  <div
-                    v-if="loader"
-                    class="text-xs mr-2"
-                  >
-                    <VBtn height="45">
-                      Loading
-                      <VProgressCircular
-                        indeterminate
-                        color="white"
-                        :size="18"
-                      />
-                    </VBtn>
-                  </div>
-                  <div
-                    v-if="tick"
-                    class="text-xs mr-2"
-                  >
-                    <VBtn height="45">
-                      Done
-                      <VIcon
-                        end
-                        icon="ri-check-line"
-                        class="font-bold"
-                        size="20"
-                      />
-                    </VBtn>
-                  </div>
-                  <div
-                    v-if="!loader && !tick"
-                    class="text-xs mr-2"
-                  >
-                    <VBtn
-                      @click="panUpload(pan)"
-                      height="45"
+                    <div
+                      v-if="loader"
+                      class="text-xs mr-2"
                     >
-                      Upload
-                      <VIcon
-                        end
-                        icon="ri-upload-cloud-line"
-                      />
-                    </VBtn>
-                  </div>
-                  <!-- <div v-else><VBtn @click="panUpload(pan)">Get Data</VBtn></div> -->
-                  <!-- </div> -->
-                </VCol>
-              </VRow>
+                      <VBtn height="45">
+                        Loading
+                        <VProgressCircular
+                          indeterminate
+                          color="white"
+                          :size="18"
+                        />
+                      </VBtn>
+                    </div>
+                    <div
+                      v-if="tick"
+                      class="text-xs mr-2"
+                    >
+                      <VBtn height="45">
+                        Done
+                        <VIcon
+                          end
+                          icon="ri-check-line"
+                          class="font-bold"
+                          size="20"
+                        />
+                      </VBtn>
+                    </div>
+                    <div
+                      v-if="!loader && !tick"
+                      class="text-xs mr-2"
+                    >
+                      <VBtn
+                        @click="panUpload(pan)"
+                        height="45"
+                      >
+                        Upload
+                        <VIcon
+                          end
+                          icon="ri-upload-cloud-line"
+                        />
+                      </VBtn>
+                    </div>
+                    <!-- <div v-else><VBtn @click="panUpload(pan)">Get Data</VBtn></div> -->
+                    <!-- </div> -->
+                  </VCol>
+                </VRow>
+              </VCol>
 
               <VCol
                 cols="12"
                 md="6"
               >
-                <VTextField
-                  placeholder="Johncy"
-                  label="Mothers Name *"
-                  id="name"
-                />
+                <VRow>
+                  <VCol cols="9">
+                    <VFileInput
+                      label="Adhar Upload"
+                      v-model="adhar"
+                  /></VCol>
+                  <VCol cols="3">
+                    <!-- <div v-if="panResponse.length">
+                  <div
+                    v-for="(item, index) in panResponse"
+                    :key="index"
+                  >
+                    {{ item }}
+                  </div>
+                </div> -->
+                    <!-- <div v-else> -->
+
+                    <div
+                      v-if="loader1"
+                      class="text-xs mr-2"
+                    >
+                      <VBtn height="45">
+                        Loading
+                        <VProgressCircular
+                          indeterminate
+                          color="white"
+                          :size="18"
+                        />
+                      </VBtn>
+                    </div>
+                    <div
+                      v-if="tick1"
+                      class="text-xs mr-2"
+                    >
+                      <VBtn height="45">
+                        Done
+                        <VIcon
+                          end
+                          icon="ri-check-line"
+                          class="font-bold"
+                          size="20"
+                        />
+                      </VBtn>
+                    </div>
+                    <div
+                      v-if="!loader1 && !tick1"
+                      class="text-xs mr-2"
+                    >
+                      <VBtn
+                        @click="adharUpload(adhar)"
+                        height="45"
+                      >
+                        Upload
+                        <VIcon
+                          end
+                          icon="ri-upload-cloud-line"
+                        />
+                      </VBtn>
+                    </div>
+                    <!-- <div v-else><VBtn @click="panUpload(pan)">Get Data</VBtn></div> -->
+                    <!-- </div> -->
+                  </VCol>
+                </VRow>
               </VCol>
               <VCol
                 cols="12"
                 md="6"
               >
-                <VTextField
-                  placeholder="Johny"
-                  label="Fathers Name *"
-                  id="name"
-                />
-              </VCol>
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  placeholder="9876543210"
-                  label="Phone *"
-                  type="number"
-                />
+                <VRow>
+                  <VCol cols="9">
+                    <VFileInput
+                      label="Bank Proof"
+                      v-model="bank"
+                  /></VCol>
+                  <VCol cols="3">
+                    <!-- <div v-if="panResponse.length">
+                  <div
+                    v-for="(item, index) in panResponse"
+                    :key="index"
+                  >
+                    {{ item }}
+                  </div>
+                </div> -->
+                    <!-- <div v-else> -->
+
+                    <div
+                      v-if="loader2"
+                      class="text-xs mr-2"
+                    >
+                      <VBtn height="45">
+                        Loading
+                        <VProgressCircular
+                          indeterminate
+                          color="white"
+                          :size="18"
+                        />
+                      </VBtn>
+                    </div>
+                    <div
+                      v-if="tick2"
+                      class="text-xs mr-2"
+                    >
+                      <VBtn height="45">
+                        Done
+                        <VIcon
+                          end
+                          icon="ri-check-line"
+                          class="font-bold"
+                          size="20"
+                        />
+                      </VBtn>
+                    </div>
+                    <div
+                      v-if="!loader2 && !tick2"
+                      class="text-xs mr-2"
+                    >
+                      <VBtn
+                        @click="bankUpload(bank)"
+                        height="45"
+                      >
+                        Upload
+                        <VIcon
+                          end
+                          icon="ri-upload-cloud-line"
+                        />
+                      </VBtn>
+                    </div>
+                    <!-- <div v-else><VBtn @click="panUpload(pan)">Get Data</VBtn></div> -->
+                    <!-- </div> -->
+                  </VCol>
+                </VRow>
               </VCol>
             </VRow>
             <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio quo a fuga nobis autem ducimus architecto
@@ -709,6 +820,12 @@ export default defineComponent({
       panResponse: ref([]),
       loader: false,
       tick: false,
+      loader1: false,
+      tick1: false,
+      bank: [],
+      adhar: [],
+      loader2: false,
+      tick2: false,
     }
   },
   setup() {
@@ -785,7 +902,7 @@ export default defineComponent({
           console.log(fileName, base64_data)
 
           // Call fetchData with the file name and data
-          this.fetchData(fileName, base64_data)
+          this.fetchPanData(fileName, base64_data)
         }
 
         // Read the file as a data URL (Base64)
@@ -794,7 +911,63 @@ export default defineComponent({
         console.error('Invalid file provided')
       }
     },
-    fetchData(file, fileData) {
+    adharUpload(file: any) {
+      console.log(file, 'file')
+      if (file && file.length > 0 && file[0] instanceof File) {
+        const uploadedFile = file[0]
+        // Create a FileReader object
+        const reader = new FileReader()
+
+        // Set up the onload event to process the file once it's read
+        reader.onload = event => {
+          // Get the Base64 string from the result
+          const fileData = event.target.result
+          const base64_data = fileData.split(',')[1]
+          // Extract the file name
+          const fileName = uploadedFile.name
+
+          // Log the file name and Base64 file data
+          console.log(fileName, base64_data)
+
+          // Call fetchData with the file name and data
+          this.fetchAdharData(fileName, base64_data)
+        }
+
+        // Read the file as a data URL (Base64)
+        reader.readAsDataURL(uploadedFile)
+      } else {
+        console.error('Invalid file provided')
+      }
+    },
+    bankUpload(file: any) {
+      console.log(file, 'file')
+      if (file && file.length > 0 && file[0] instanceof File) {
+        const uploadedFile = file[0]
+        // Create a FileReader object
+        const reader = new FileReader()
+
+        // Set up the onload event to process the file once it's read
+        reader.onload = event => {
+          // Get the Base64 string from the result
+          const fileData = event.target.result
+          const base64_data = fileData.split(',')[1]
+          // Extract the file name
+          const fileName = uploadedFile.name
+
+          // Log the file name and Base64 file data
+          console.log(fileName, base64_data)
+
+          // Call fetchData with the file name and data
+          this.fetchBankData(fileName, base64_data)
+        }
+
+        // Read the file as a data URL (Base64)
+        reader.readAsDataURL(uploadedFile)
+      } else {
+        console.error('Invalid file provided')
+      }
+    },
+    fetchPanData(file, fileData) {
       this.loader = true
       const data = {
         fileName: file,
@@ -819,6 +992,68 @@ export default defineComponent({
           this.tick = true
           this.panResponse.value = response.data
           console.log('Updated panResponse:', this.panResponse)
+        })
+        .catch(error => {
+          console.error('Error:', error)
+        })
+    },
+    fetchAdharData(fileName, fileData) {
+      this.loader1 = true
+      const data = {
+        aadhaar: true,
+        aadhaarF_Name: fileName,
+        aadhaarF_Data: fileData,
+        aadhaarB_Name: '',
+        aadhaarB_Data: '',
+      }
+      const params = new URLSearchParams()
+      Object.keys(data).forEach(key => {
+        params.append(key, data[key])
+      })
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+
+      axios
+        .post('https://gkyc.gwcindia.in/web-ocr/api-ocr-documents.php', params, config)
+        .then(response => {
+          this.loader1 = false
+          this.tick1 = true
+
+          console.log('Updated panResponse aadhar:', response)
+        })
+        .catch(error => {
+          console.error('Error:', error)
+        })
+    },
+    fetchBankData(fileName, fileData) {
+      this.loader2 = true
+      const data = {
+        bank: true,
+        fileName: fileName,
+        file_data: fileData,
+      }
+      const params = new URLSearchParams()
+      Object.keys(data).forEach(key => {
+        params.append(key, data[key])
+      })
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+
+      axios
+        .post('https://gkyc.gwcindia.in/web-ocr/api-ocr-documents.php', params, config)
+        .then(response => {
+          this.loader2 = false
+          this.tick2 = true
+
+          console.log('Updated panResponse aadhar:', response)
         })
         .catch(error => {
           console.error('Error:', error)
