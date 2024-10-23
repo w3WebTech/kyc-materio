@@ -599,57 +599,47 @@
           :class="{ active: activeSlide === 8, hidden: activeSlide !== 8 }"
         >
           <div class="slide-1 w-full flex justify-center space-x-4">
-            <VRow class="">
-              <VCol cols="12">EIGHTH STEP</VCol>
+            <VRow class="md:px-40">
+              <VCol cols="12">EIGHTTH STEP</VCol>
               <VCol
                 cols="12"
                 md="6"
-                class=""
               >
-                <VRow class="md:px-40">
-                  <VCol cols="12">SIXTH STEP</VCol>
-                  <VCol
-                    cols="12"
-                    md="6"
-                  >
-                    <VTextField
-                      placeholder="John"
-                      label="Name *"
-                      id="name"
-                    />
-                  </VCol>
-                  <VCol
-                    cols="12"
-                    md="6"
-                  >
-                    <VTextField
-                      placeholder="Johncy"
-                      label="Mothers Name *"
-                      id="name"
-                    />
-                  </VCol>
-                  <VCol
-                    cols="12"
-                    md="6"
-                  >
-                    <VTextField
-                      placeholder="Johny"
-                      label="Fathers Name *"
-                      id="name"
-                    />
-                  </VCol>
-                  <VCol
-                    cols="12"
-                    md="6"
-                  >
-                    <VTextField
-                      placeholder="9876543210"
-                      label="Phone *"
-                      type="number"
-                    />
-                  </VCol>
-                </VRow>
-                <!-- <faceliveness /> -->
+                <VTextField
+                  placeholder="John"
+                  label="Name *"
+                  id="name"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VTextField
+                  placeholder="Johncy"
+                  label="Mothers Name *"
+                  id="name"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VTextField
+                  placeholder="Johny"
+                  label="Fathers Name *"
+                  id="name"
+                />
+              </VCol>
+              <VCol
+                cols="12"
+                md="6"
+              >
+                <VTextField
+                  placeholder="9876543210"
+                  label="Phone *"
+                  type="number"
+                />
               </VCol>
             </VRow>
           </div>
