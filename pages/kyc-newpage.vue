@@ -1157,7 +1157,7 @@ export default defineComponent({
               this.avatar3 = null
 
               this.handleAvatarUpdate3(null)
-              alert('Invalid Adhar Proof !,Please Update Valid One !!!')
+              alert('Invalid Bank Proof !,Please Update Valid One !!!')
             }
           } else {
             alert('Error in response data')
