@@ -645,22 +645,35 @@
           </div>
         </div>
       </div>
+
       <div class="slide-nav flex justify-between mb-6 mt-2 md:ml-40">
         <VBtn
           @click="navigate(-1)"
           class="bg-gray-200 p-2 rounded"
           :disabled="activeSlide <= 1"
         >
+          <VIcon
+            icon="ri-arrow-left-double-line"
+            color="white"
+            size="14"
+            class="px-5 py-3"
+          />
           PREV
         </VBtn>
         <div>
           <VBtn
             @click="navigate(1)"
-            class="bg-gray-200 p-2 rounded md:mr-[120px]"
+            class="p-2 rounded md:mr-[90px]"
             :disabled="steps[steps?.length - 1] == activeSlide"
             id="start-button"
           >
             NEXT
+            <VIcon
+              icon="ri-arrow-right-double-line"
+              color="white"
+              size="14"
+              class="px-5 py-3"
+            />
           </VBtn>
           <!-- <div class="mb-20 pl-20 ml-20">
             <VBtn
@@ -730,7 +743,7 @@
                                 color="gray"
                                 size="15"
                                 class="px-5 py-2"
-                              />Hire a Uizard Expert <span class="text-blue">- $100 off</span>
+                              />Hire a Uizard Expert <span class="text-blue-600">- $100 off</span>
                             </div>
                           </li>
                         </ul>
@@ -788,7 +801,8 @@
           </div>
         </div>
       </div>
-      <div class="flex justify-center my-4">
+
+      <div class="flex justify-center items-center text-center my-4">
         <button
           @click="setSlide(1)"
           class=""
@@ -1039,7 +1053,7 @@ export default defineComponent({
   },
   methods: {
     setSlide(id: number) {
-      this.activeSlide = id
+      // this.activeSlide = id
     },
     // navigate(direction: number) {
     //   const stepsAsNumbers = this.steps.map(Number)
