@@ -847,7 +847,6 @@
     </VCard>
   </VDialog>
 </template>
-
 <script lang="ts">
 import { useTheme } from 'vuetify'
 import axios from 'axios'
@@ -914,6 +913,58 @@ export default defineComponent({
     setSlide(id: number) {
       this.activeSlide = id
     },
+    // navigate(direction: number) {
+    //   const stepsAsNumbers = this.steps.map(Number)
+    //   const currentIndex = stepsAsNumbers.indexOf(this.activeSlide)
+    //   let newIndex = currentIndex + direction
+
+    //   if (newIndex < 0) {
+    //     newIndex = 0
+    //   } else if (newIndex >= stepsAsNumbers.length) {
+    //     newIndex = stepsAsNumbers.length - 1
+    //   }
+    //   if (direction == 1) {
+    //     // confetti({
+    //     //   angle: this.randomInRange(360, 360),
+    //     //   spread: this.randomInRange(360, 360),
+    //     //   particleCount: this.randomInRange(360, 360),
+    //     //   origin: { y: 0.6 },
+    //     // })
+    //     confetti({ particleCount: 300, spread: 180, origin: { y: 0.7 } })
+    //   }
+
+    //   this.activeSlide = stepsAsNumbers[newIndex]
+    // },
+    // navigate(direction: number) {
+    //   debugger
+    //   const stepsAsNumbers = this.steps.map(Number)
+    //   const currentIndex = stepsAsNumbers.indexOf(this.activeSlide)
+    //   let newIndex = currentIndex + direction
+
+    //   if (newIndex < 0) {
+    //     newIndex = 0
+    //   } else if (newIndex >= stepsAsNumbers.length) {
+    //     newIndex = stepsAsNumbers.length - 1
+    //   }
+
+    //   this.activeSlide = stepsAsNumbers[newIndex]
+    //   this.$nextTick(() => {
+    //     const currentSlide = this.$el.querySelector(`.slide.active`)
+    //     const nextSlide = this.$el.querySelector(`.slide:nth-child(${newIndex + 1})`)
+
+    //     if (direction === 1) {
+    //       // Next slide - slide in from the right
+    //       currentSlide.classList.add('hidden')
+    //       currentSlide.classList.remove('active')
+    //       nextSlide.classList.add('active')
+    //     } else if (direction === -1) {
+    //       // Previous slide - slide in from the left
+    //       currentSlide.classList.add('hidden1')
+    //       currentSlide.classList.remove('active1')
+    //       nextSlide.classList.add('active1')
+    //     }
+    //   })
+    // },
     navigate(direction: number) {
       const stepsAsNumbers = this.steps.map(Number)
       const currentIndex = stepsAsNumbers.indexOf(this.activeSlide)
@@ -924,17 +975,34 @@ export default defineComponent({
       } else if (newIndex >= stepsAsNumbers.length) {
         newIndex = stepsAsNumbers.length - 1
       }
-      if (direction == 1) {
-        // confetti({
-        //   angle: this.randomInRange(360, 360),
-        //   spread: this.randomInRange(360, 360),
-        //   particleCount: this.randomInRange(360, 360),
-        //   origin: { y: 0.6 },
-        // })
-        confetti({ particleCount: 300, spread: 180, origin: { y: 0.7 } })
+
+      const currentSlide = document.querySelector('.slide.active')
+      const nextSlide = document.querySelector(`.slide:nth-child(${newIndex + 1})`)
+
+      if (direction === 1) {
+        // Next slide
+        currentSlide?.classList.add('slide-next-out')
+        nextSlide?.classList.remove('hidden')
+        nextSlide?.classList.add('slide-next-in')
+      } else {
+        // Previous slide
+        currentSlide?.classList.add('slide-prev-out')
+        nextSlide?.classList.remove('hidden')
+        nextSlide?.classList.add('slide-prev-in')
       }
 
-      this.activeSlide = stepsAsNumbers[newIndex]
+      // Clean up animations and update active slide
+      setTimeout(() => {
+        currentSlide?.classList.remove('active', 'slide-next-out', 'slide-prev-out')
+        currentSlide?.classList.add('hidden')
+        nextSlide?.classList.remove('slide-next-in', 'slide-prev-in')
+        nextSlide?.classList.add('active')
+        this.activeSlide = stepsAsNumbers[newIndex]
+      }, 500)
+
+      if (direction === 1) {
+        confetti({ particleCount: 300, spread: 180, origin: { y: 0.7 } })
+      }
     },
     randomInRange(min: number, max: number) {
       return Math.random() * (max - min) + min
@@ -1288,7 +1356,6 @@ export default defineComponent({
   },
 })
 </script>
-
 <style lang="scss" >
 @use '@core/scss/pages/page-auth.scss';
 .animate-charcter {
@@ -1366,38 +1433,7 @@ export default defineComponent({
     animation: flip 0.5s ease-in-out infinite alternate-reverse both;
   }
 }
-.slide-container {
-  position: relative;
-  height: 450px; /* Adjust as needed */
-  overflow: hidden; /* Hide overflowing content */
-}
-.slide.no-slide-out {
-  animation: none; /* Disable the animation */
-}
-
-.slide.active.no-slide-out {
-  animation: none; /* Ensure no animation when activeSlide is 1 */
-}
-.slide {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: transform 0.5s ease-in-out; /* Add transition to slide */
-  top: 0;
-}
-
-.slide.hidden {
-  animation: slideOut 0.5s forwards;
-}
-
-.slide.active {
-  animation: slideIn 0.5s forwards;
-}
-
-@keyframes slideOut {
+@keyframes slideOutToLeft {
   0% {
     transform: translateX(0);
   }
@@ -1406,7 +1442,7 @@ export default defineComponent({
   }
 }
 
-@keyframes slideIn {
+@keyframes slideInFromRight {
   0% {
     transform: translateX(100%);
   }
@@ -1414,4 +1450,104 @@ export default defineComponent({
     transform: translateX(0);
   }
 }
+
+/* Slide animations for PREV */
+@keyframes slideOutToRight {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Next transition classes */
+.slide-next-out {
+  animation: slideOutToLeft 0.5s forwards;
+}
+
+.slide-next-in {
+  animation: slideInFromRight 0.5s forwards;
+}
+
+/* Prev transition classes */
+.slide-prev-out {
+  animation: slideOutToRight 0.5s forwards;
+}
+
+.slide-prev-in {
+  animation: slideInFromLeft 0.5s forwards;
+}
+
+.hidden {
+  display: none;
+}
+.slide-container {
+  position: relative;
+  height: 450px; /* Adjust as needed */
+  overflow: hidden;
+  /* Hide overflowing content */
+}
+// .slide.no-slide-out {
+//   animation: none; /* Disable the animation */
+// }
+
+// .slide.active.no-slide-out {
+//   animation: none; /* Ensure no animation when activeSlide is 1 */
+// }
+// .slide {
+//   position: absolute;
+//   width: 100%;
+//   height: 100%;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   transition: transform 0.5s ease-in-out; /* Add transition to slide */
+//   top: 0;
+// }
+
+// .slide.hidden {
+//   animation: slideOut 0.5s forwards;
+// }
+
+// .slide.active {
+//   animation: slideIn 0.5s forwards;
+// }
+
+// @keyframes slideOut {
+//   0% {
+//     transform: translate(0%);
+//   }
+//   100% {
+//     transform: translate(-100%);
+//   }
+// }
+
+// @keyframes slideIn {
+//   0% {
+//     transform: translate(100%);
+//   }
+//   100% {
+//     transform: translate(0);
+//   }
+// }
 </style>
