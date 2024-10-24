@@ -673,7 +673,7 @@
               color="#000"
               icon="ri-question-mark"
               @click="toggleQuestionCard"
-              class="sm:mt-3 sm:ml-10"
+              class="mt-3 ml-10"
             />
             <div
               v-if="showQuestionCard"
@@ -1597,7 +1597,7 @@ export default defineComponent({
 }
 .slide-container {
   position: relative;
-  height: 450px; /* Adjust as needed */
+  height: 430px; /* Adjust as needed */
   overflow: hidden;
   /* Hide overflowing content */
 }
