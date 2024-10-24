@@ -671,47 +671,119 @@
           <div class="relative md:inline-block">
             <VBtn
               color="#000"
-              icon="ri-question-mark"
+              :icon="!showQuestionCard ? 'ri-question-mark' : 'ri-arrow-down-s-line'"
               @click="toggleQuestionCard"
               class="mt-3 ml-10"
             />
             <div
               v-if="showQuestionCard"
               :class="isDarkTheme == true ? 'bg-[#312D4B]' : ''"
-              class="question-card absolute bottom-full right-0 mb-2 w-80 bg-white rounded-lg shadow-lg p-4 z-50"
+              class="question-card absolute bottom-full right-0 mb-2 w-70 z-50"
             >
-              <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold">Need Help?</h3>
-                <VBtn
-                  icon="ri-close-line"
-                  variant="text"
-                  density="compact"
-                  @click="toggleQuestionCard"
-                />
-              </div>
-              <div class="space-y-4">
-                <div class="mt-4">
-                  <!-- <VTextarea
-                    density="compact"
-                    class="mb-2"
-                  /> -->
-                  <VTextarea
-                    class="mb-2"
-                    rows="4"
-                    v-model="customQuestion"
-                    label="Ask your question"
-                    placeholder="Type your question here..."
-                  />
-                  <VBtn
-                    block
-                    color="primary"
-                    @click="submitQuestion"
-                    :disabled="!customQuestion"
-                  >
-                    Submit Question
-                  </VBtn>
+              <VCard class="p-4">
+                <div class="drawer drawer-end">
+                  <div class="drawer-side">
+                    <label
+                      for="my-drawer"
+                      class="drawer-overlay"
+                    ></label>
+                    <ul class="menu p-4 overflow-y-auto w-80 bg-base-100">
+                      <li class="menu-item">
+                        <div class="text-sm text-gray-600 font-bold py-3">GETTING STARTED</div>
+                        <hr />
+                        <div class="h-2"></div>
+                        <ul class="menu-items text-sm">
+                          <li class="hover:bg-gray-200 hover:rounded-md py-3">
+                            <div class="text-gray-600">
+                              <VIcon
+                                icon="ri-question-mark"
+                                color="gray"
+                                size="14"
+                                class="px-5 py-3"
+                              />Help center
+                            </div>
+                          </li>
+                          <li class="hover:bg-gray-200 hover:rounded-md py-3">
+                            <div class="text-gray-600">
+                              <VIcon
+                                icon="ri-message-2-line"
+                                color="gray"
+                                size="15"
+                                class="px-5 py-2"
+                              />Support chat
+                            </div>
+                          </li>
+                          <li class="hover:bg-gray-200 hover:rounded-md py-3">
+                            <div class="text-gray-600">
+                              <VIcon
+                                icon="ri-lightbulb-flash-line"
+                                color="gray"
+                                size="15"
+                                class="px-5 py-2"
+                              />Submit feedback / Request feature
+                            </div>
+                          </li>
+                          <li class="hover:bg-gray-200 hover:rounded-md py-3">
+                            <div class="text-gray-600">
+                              <VIcon
+                                icon="ri-group-line"
+                                color="gray"
+                                size="15"
+                                class="px-5 py-2"
+                              />Hire a Uizard Expert <span class="text-blue">- $100 off</span>
+                            </div>
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="menu-item">
+                        <div class="text-sm text-gray-600 font-bold py-3">GENERAL</div>
+                        <hr />
+                        <div class="h-2"></div>
+                        <ul class="menu-items text-sm">
+                          <li class="hover:bg-gray-200 hover:rounded-md">
+                            <div class="text-gray-600 flex">
+                              <div class="px-3 py-3">
+                                <VBadge
+                                  dot
+                                  color="error"
+                                >
+                                  <VIcon
+                                    color="gray"
+                                    size="20"
+                                    class=""
+                                    icon="ri-information-line"
+                                  />
+                                </VBadge>
+                              </div>
+                              <div class="py-4">What's new</div>
+                            </div>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
+                <div class="space-y-4">
+                  <!-- <div class="mt-4">
+                    
+                    <VTextarea
+                      class="mb-2"
+                      rows="4"
+                      v-model="customQuestion"
+                      label="Ask your question"
+                      placeholder="Type your question here..."
+                    />
+                    <VBtn
+                      block
+                      color="primary"
+                      @click="submitQuestion"
+                      :disabled="!customQuestion"
+                    >
+                      Submit Question
+                    </VBtn>
+                  </div> -->
+                </div>
+              </VCard>
             </div>
           </div>
         </div>
@@ -940,12 +1012,6 @@ export default defineComponent({
       bankname: null,
       showQuestionCard: false,
       customQuestion: '',
-      commonQuestions: [
-        { text: 'How do I upload documents?', action: 'upload' },
-        { text: 'What file formats are supported?', action: 'formats' },
-        { text: 'How to verify my documents?', action: 'verify' },
-        { text: 'Need technical support', action: 'support' },
-      ],
     }
   },
   setup() {
