@@ -645,7 +645,7 @@
           </div>
         </div>
       </div>
-      <div class="slide-nav flex justify-between mb-6 mt-2 md:mx-40">
+      <div class="slide-nav flex justify-between mb-6 mt-2 md:ml-40">
         <VBtn
           @click="navigate(-1)"
           class="bg-gray-200 p-2 rounded"
@@ -653,14 +653,68 @@
         >
           PREV
         </VBtn>
-        <VBtn
-          @click="navigate(1)"
-          class="bg-gray-200 p-2 rounded"
-          :disabled="steps[steps?.length - 1] == activeSlide"
-          id="start-button"
-        >
-          NEXT
-        </VBtn>
+        <div>
+          <VBtn
+            @click="navigate(1)"
+            class="bg-gray-200 p-2 rounded md:mr-[120px]"
+            :disabled="steps[steps?.length - 1] == activeSlide"
+            id="start-button"
+          >
+            NEXT
+          </VBtn>
+          <!-- <div class="mb-20 pl-20 ml-20">
+            <VBtn
+              color="warning"
+              icon="ri-question-mark"
+            />
+          </div> -->
+          <div class="relative md:inline-block">
+            <VBtn
+              color="#000"
+              icon="ri-question-mark"
+              @click="toggleQuestionCard"
+              class="sm:mt-3 sm:ml-10"
+            />
+            <div
+              v-if="showQuestionCard"
+              :class="isDarkTheme == true ? 'bg-[#312D4B]' : ''"
+              class="question-card absolute bottom-full right-0 mb-2 w-80 bg-white rounded-lg shadow-lg p-4 z-50"
+            >
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Need Help?</h3>
+                <VBtn
+                  icon="ri-close-line"
+                  variant="text"
+                  density="compact"
+                  @click="toggleQuestionCard"
+                />
+              </div>
+              <div class="space-y-4">
+                <div class="mt-4">
+                  <!-- <VTextarea
+                    density="compact"
+                    class="mb-2"
+                  /> -->
+                  <VTextarea
+                    class="mb-2"
+                    rows="4"
+                    v-model="customQuestion"
+                    label="Ask your question"
+                    placeholder="Type your question here..."
+                  />
+                  <VBtn
+                    block
+                    color="primary"
+                    @click="submitQuestion"
+                    :disabled="!customQuestion"
+                  >
+                    Submit Question
+                  </VBtn>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="flex justify-center my-4">
         <button
@@ -884,6 +938,14 @@ export default defineComponent({
       eppdfname: null,
       panpdfname: null,
       bankname: null,
+      showQuestionCard: false,
+      customQuestion: '',
+      commonQuestions: [
+        { text: 'How do I upload documents?', action: 'upload' },
+        { text: 'What file formats are supported?', action: 'formats' },
+        { text: 'How to verify my documents?', action: 'verify' },
+        { text: 'Need technical support', action: 'support' },
+      ],
     }
   },
   setup() {
@@ -1341,6 +1403,38 @@ export default defineComponent({
         reader.readAsDataURL(uploadedFile)
       }
     },
+    toggleQuestionCard() {
+      debugger
+      this.showQuestionCard = !this.showQuestionCard
+    },
+
+    handleQuestionClick(question) {
+      // Handle different question types
+      switch (question.action) {
+        case 'upload':
+          alert('To upload documents, click on the respective upload button and select your file.')
+          break
+        case 'formats':
+          alert('We support PDF, JPG, and PNG file formats.')
+          break
+        case 'verify':
+          alert('Documents are automatically verified when uploaded.')
+          break
+        case 'support':
+          alert('Please contact our support team at support@example.com')
+          break
+      }
+      this.showQuestionCard = false
+    },
+
+    submitQuestion() {
+      if (this.customQuestion) {
+        // Here you can implement the logic to handle custom questions
+        // alert(`Thank you for your question: ${this.customQuestion}. Our team will get back to you soon.`)
+        this.customQuestion = ''
+        this.showQuestionCard = false
+      }
+    },
   },
   watch: {
     pan(newValue) {
@@ -1507,47 +1601,36 @@ export default defineComponent({
   overflow: hidden;
   /* Hide overflowing content */
 }
-// .slide.no-slide-out {
-//   animation: none; /* Disable the animation */
-// }
+.question-card {
+  transition: all 0.3s ease;
 
-// .slide.active.no-slide-out {
-//   animation: none; /* Ensure no animation when activeSlide is 1 */
-// }
-// .slide {
-//   position: absolute;
-//   width: 100%;
-//   height: 100%;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   transition: transform 0.5s ease-in-out; /* Add transition to slide */
-//   top: 0;
-// }
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 0.3s, transform 0.3s;
+  }
 
-// .slide.hidden {
-//   animation: slideOut 0.5s forwards;
-// }
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 
-// .slide.active {
-//   animation: slideIn 0.5s forwards;
-// }
+  &-enter-to,
+  &-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-// @keyframes slideOut {
-//   0% {
-//     transform: translate(0%);
-//   }
-//   100% {
-//     transform: translate(-100%);
-//   }
-// }
+// Make sure the card appears above other elements
+.relative {
+  position: relative;
+}
 
-// @keyframes slideIn {
-//   0% {
-//     transform: translate(100%);
-//   }
-//   100% {
-//     transform: translate(0);
-//   }
-// }
+// Add hover effects to question buttons
+.v-btn.v-btn--variant-text {
+  &:hover {
+    background-color: rgba(var(--v-theme-primary), 0.05);
+  }
+}
 </style>
