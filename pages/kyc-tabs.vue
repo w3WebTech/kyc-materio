@@ -922,14 +922,14 @@ label input[type='radio']:checked + span {
           :key="index"
           class="flex items-center space-x-4"
         >
-          <input
+          <!-- <input
             type="radio"
             name="step"
             id="step{{ index + 1 }}"
             v-model="currentStep"
             :value="index"
             :checked="currentStep === index"
-          />
+          /> -->
 
           <label
             :for="'step' + (index + 1)"
@@ -1053,12 +1053,12 @@ label input[type='radio']:checked + span {
                     class="mx-3 my-2"
                     @click="gender('option1')"
                   >
-                    <input
+                    <!-- <input
                       type="radio"
                       :name="`gender-${selectedGender}`"
                       value="option1"
                       class="bg-blue-500 text-white"
-                    />
+                    /> -->
                     Male
                   </div>
                   <div
@@ -1073,12 +1073,12 @@ label input[type='radio']:checked + span {
                     class="mx-3 my-2"
                     @click="gender('option2')"
                   >
-                    <input
+                    <!-- <input
                       type="radio"
                       :name="`gender-${selectedGender}`"
                       value="option2"
                       class="bg-blue-500 text-white"
-                    />
+                    /> -->
                     Female
                   </div>
                   <div
@@ -1093,12 +1093,12 @@ label input[type='radio']:checked + span {
                     class="mx-3 my-2"
                     @click="gender('option3')"
                   >
-                    <input
+                    <!-- <input
                       type="radio"
                       :name="`gender-${selectedGender}`"
                       value="option3"
                       class="bg-blue-500 text-white"
-                    />
+                    /> -->
                     Trans
                   </div>
                 </VRow>
@@ -1128,11 +1128,11 @@ label input[type='radio']:checked + span {
                     class="mx-3 my-2"
                     @click="mStatus('Single')"
                   >
-                    <input
+                    <!-- <input
                       type="radio"
                       value="option1"
                       class="bg-blue-500 text-white"
-                    />
+                    /> -->
                     Single
                   </div>
                   <div
@@ -1147,11 +1147,11 @@ label input[type='radio']:checked + span {
                     class="mx-3 my-2"
                     @click="mStatus('Married')"
                   >
-                    <input
+                    <!-- <input
                       type="radio"
                       value="option2"
                       class="bg-blue-500 text-white"
-                    />
+                    /> -->
                     Married
                   </div>
                 </VRow>

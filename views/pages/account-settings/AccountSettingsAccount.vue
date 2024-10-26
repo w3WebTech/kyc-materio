@@ -116,14 +116,14 @@ const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'BRL', 'CAD', 'CNY', 'CZK', 'DKK
                 <span class="d-none d-sm-block">Upload new photo</span>
               </VBtn>
 
-              <input
+              <!-- <input
                 ref="refInputEl"
                 type="file"
                 name="file"
                 accept=".jpeg,.png,.jpg,GIF"
                 hidden
                 @input="changeAvatar"
-              />
+              /> -->
 
               <VBtn
                 type="reset"
